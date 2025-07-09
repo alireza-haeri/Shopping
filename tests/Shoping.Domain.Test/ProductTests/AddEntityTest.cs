@@ -12,11 +12,12 @@ public class AddEntityTest
         var title = "Product Title";
         var description = "Product Description";
         var price = 4000;
+        var quantity = 1;
         Guid? userId = null;
         Guid? categoryId = Guid.NewGuid();
 
         //Act
-        Action act = () => ProductEntity.Create(title, description, price, userId, categoryId);
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -29,11 +30,12 @@ public class AddEntityTest
         var title = "Product Title";
         var description = "Product Description";
         var price = 4000;
+        var quantity = 1;
         Guid? userId = Guid.NewGuid();
         Guid? categoryId = null;
 
         //Act
-        Action act = () => ProductEntity.Create(title, description, price, userId, categoryId);
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -46,11 +48,12 @@ public class AddEntityTest
         var title = "Product Title";
         var description = "Product Description";
         var price = 4000;
+        var quantity = 1;
         Guid? userId = Guid.Empty;
         Guid? categoryId = Guid.NewGuid();
 
         //Act
-        Action act = () => ProductEntity.Create(title, description, price, userId, categoryId);
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -63,11 +66,30 @@ public class AddEntityTest
         var title = "Product Title";
         var description = "Product Description";
         var price = 4000;
+        var quantity = 1;
         Guid? userId = Guid.NewGuid();
         Guid? categoryId = Guid.Empty;
 
         //Act
-        Action act = () => ProductEntity.Create(title, description, price, userId, categoryId);
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
+
+        //Assert
+        act.Should().Throw<InvalidOperationException>();
+    }
+    
+    [Fact]
+    public void Creating_Ads_With_LessThan_Zero_Quantity_Should_Throw_ArgumentNullException()
+    {
+        //Arrange
+        var title = "Product Title";
+        var description = "Product Description";
+        var price = 4000;
+        var quantity = -1;
+        Guid? userId = Guid.NewGuid();
+        Guid? categoryId = Guid.NewGuid();
+
+        //Act
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -80,13 +102,14 @@ public class AddEntityTest
         var title = "Product Title";
         var description = "Product Description";
         var price = 4000;
+        var quantity = 1;
         Guid? id= Guid.NewGuid();
         Guid? userId = Guid.NewGuid();
         Guid? categoryId = Guid.NewGuid();
 
         //Act
-        var product1 =  ProductEntity.Create(id,title, description, price, userId, categoryId);
-        var product2 =  ProductEntity.Create(id,title, description, price, userId, categoryId);
+        var product1 =  ProductEntity.Create(id,title, description, price, quantity, userId, categoryId);
+        var product2 =  ProductEntity.Create(id,title, description, price, quantity, userId, categoryId);
 
         //Assert
         product1.Equals(product2).Should().BeTrue();

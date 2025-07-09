@@ -13,12 +13,13 @@ public class ProductEntity : BaseEntity<Guid>
     public string Title { get; private set; } = null!;
     public string Description { get; private set; } = null!;
     public decimal Price { get; private set; }
+    public int Quantity { get; private set; }
     public Guid UserId { get; private set; }
     public Guid CategoryId { get; private set; }
 
     public IReadOnlyList<ImageValueObject> Images => _images;
 
-    public static ProductEntity Create(Guid? id, string title, string description, decimal price, Guid? userId,
+    public static ProductEntity Create(Guid? id, string title, string description, decimal price,int quantity, Guid? userId,
         Guid? categoryId)
     {
         ArgumentNullException.ThrowIfNull(title);
@@ -28,6 +29,9 @@ public class ProductEntity : BaseEntity<Guid>
 
         if (id == Guid.Empty || id == null)
             throw new InvalidOperationException("Id Must Have a Value");
+        
+        if(quantity < 0)
+            throw new InvalidOperationException("Quantity must be equal or greater than zero");
 
         if (userId == Guid.Empty || userId == null)
             throw new InvalidOperationException("User Id Must Have a Value");
@@ -41,17 +45,21 @@ public class ProductEntity : BaseEntity<Guid>
             Title = title,
             Description = description,
             Price = price,
+            Quantity = quantity,
             UserId = userId.Value,
             CategoryId = categoryId.Value
         };
     }
 
-    public static ProductEntity Create(string title, string description, decimal price, Guid? userId, Guid? categoryId)
+    public static ProductEntity Create(string title, string description, decimal price,int quantity, Guid? userId, Guid? categoryId)
     {
         ArgumentNullException.ThrowIfNull(title);
 
         if (price <= 0)
             throw new InvalidOperationException("Price must be greater than zero");
+        
+        if(quantity < 0)
+            throw new InvalidOperationException("Quantity must be equal or greater than zero");
 
         if (userId == Guid.Empty || userId == null)
             throw new InvalidOperationException("User Id Must Have a Value");
@@ -65,6 +73,7 @@ public class ProductEntity : BaseEntity<Guid>
             Title = title,
             Description = description,
             Price = price,
+            Quantity = quantity,
             UserId = userId.Value,
             CategoryId = categoryId.Value
         };

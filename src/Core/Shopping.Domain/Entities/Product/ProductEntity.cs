@@ -15,14 +15,14 @@ public class ProductEntity : BaseEntity<Guid>
     public string Description { get; private set; } = null!;
     public decimal Price { get; private set; }
     public int Quantity { get; private set; }
+    public ProductState State { get; set; }
     public Guid UserId { get; private set; }
     public Guid CategoryId { get; private set; }
 
     public IReadOnlyList<ImageValueObject> Images => _images;
 
     public static ProductEntity Create(Guid? id, string title, string description, decimal price, int quantity,
-        Guid? userId,
-        Guid? categoryId)
+        ProductState state, Guid? userId, Guid? categoryId)
     {
         Guard.Against.NullOrEmpty(title, message: "Invalid Title");
         Guard.Against.NullOrEmpty(id, message: "Invalid Id");
@@ -38,12 +38,21 @@ public class ProductEntity : BaseEntity<Guid>
             Description = description,
             Price = price,
             Quantity = quantity,
+            State = state,
             UserId = userId.Value,
             CategoryId = categoryId.Value
         };
     }
 
-    public static ProductEntity Create(string title, string description, decimal price, int quantity, Guid? userId,
-        Guid? categoryId)
-        => Create(Guid.NewGuid(), title, description, price, quantity, userId, categoryId);
+    public static ProductEntity Create(string title, string description, decimal price, int quantity,
+        ProductState state, Guid? userId, Guid? categoryId)
+        => Create(Guid.NewGuid(), title, description, price, quantity, state, userId, categoryId);
+
+
+    public enum ProductState
+    {
+        Hidden = 0,
+        ShowOnly = 1,
+        Active = 2
+    }
 }

@@ -6,6 +6,24 @@ namespace Shoping.Domain.Test.ProductTests;
 public class AddEntityTest
 {
     [Fact]
+    public void Creating_Ads_With_Null_Title_Should_Throw_ArgumentNullException()
+    {
+        //Arrange
+        string? title = null;
+        var description = "Product Description";
+        var price = 4000;
+        var quantity = 1;
+        Guid? userId = Guid.NewGuid();
+        Guid? categoryId = Guid.NewGuid();
+
+        //Act
+        Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
+
+        //Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
+    
+    [Fact]
     public void Creating_Ads_With_Null_User_Should_Throw_ArgumentNullException()
     {
         //Arrange

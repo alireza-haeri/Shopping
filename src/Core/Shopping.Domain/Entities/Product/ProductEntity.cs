@@ -1,4 +1,5 @@
-﻿using Shopping.Domain.Common;
+﻿using Ardalis.GuardClauses;
+using Shopping.Domain.Common;
 using Shopping.Domain.Common.ValueObjects;
 
 namespace Shopping.Domain.Entities.Product;
@@ -19,25 +20,16 @@ public class ProductEntity : BaseEntity<Guid>
 
     public IReadOnlyList<ImageValueObject> Images => _images;
 
-    public static ProductEntity Create(Guid? id, string title, string description, decimal price,int quantity, Guid? userId,
+    public static ProductEntity Create(Guid? id, string title, string description, decimal price, int quantity,
+        Guid? userId,
         Guid? categoryId)
     {
-        ArgumentNullException.ThrowIfNull(title);
-
-        if (price <= 0)
-            throw new InvalidOperationException("Price must be greater than zero");
-
-        if (id == Guid.Empty || id == null)
-            throw new InvalidOperationException("Id Must Have a Value");
-        
-        if(quantity < 0)
-            throw new InvalidOperationException("Quantity must be equal or greater than zero");
-
-        if (userId == Guid.Empty || userId == null)
-            throw new InvalidOperationException("User Id Must Have a Value");
-
-        if (categoryId == Guid.Empty || categoryId == null)
-            throw new InvalidOperationException("Category Id Must Have a Value");
+        Guard.Against.NullOrEmpty(title, message: "Invalid Title");
+        Guard.Against.NullOrEmpty(id, message: "Invalid Id");
+        Guard.Against.NullOrEmpty(userId, message: "Invalid User Id");
+        Guard.Against.NullOrEmpty(categoryId, message: "Invalid Category Id");
+        Guard.Against.NegativeOrZero(price, message: "Invalid Price");
+        Guard.Against.Negative(quantity, message: "Invalid Quantity");
 
         return new ProductEntity()
         {
@@ -51,31 +43,7 @@ public class ProductEntity : BaseEntity<Guid>
         };
     }
 
-    public static ProductEntity Create(string title, string description, decimal price,int quantity, Guid? userId, Guid? categoryId)
-    {
-        ArgumentNullException.ThrowIfNull(title);
-
-        if (price <= 0)
-            throw new InvalidOperationException("Price must be greater than zero");
-        
-        if(quantity < 0)
-            throw new InvalidOperationException("Quantity must be equal or greater than zero");
-
-        if (userId == Guid.Empty || userId == null)
-            throw new InvalidOperationException("User Id Must Have a Value");
-
-        if (categoryId == Guid.Empty || categoryId == null)
-            throw new InvalidOperationException("Category Id Must Have a Value");
-
-        return new ProductEntity()
-        {
-            Id = Guid.NewGuid(),
-            Title = title,
-            Description = description,
-            Price = price,
-            Quantity = quantity,
-            UserId = userId.Value,
-            CategoryId = categoryId.Value
-        };
-    }
+    public static ProductEntity Create(string title, string description, decimal price, int quantity, Guid? userId,
+        Guid? categoryId)
+        => Create(Guid.NewGuid(), title, description, price, quantity, userId, categoryId);
 }

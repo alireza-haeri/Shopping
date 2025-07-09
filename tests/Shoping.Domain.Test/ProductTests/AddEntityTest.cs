@@ -38,7 +38,7 @@ public class AddEntityTest
         Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class AddEntityTest
         Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class AddEntityTest
         Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class AddEntityTest
         Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
     
     [Fact]
@@ -110,7 +110,7 @@ public class AddEntityTest
         Action act = () => ProductEntity.Create(title, description, price, quantity, userId, categoryId);
 
         //Assert
-        act.Should().Throw<InvalidOperationException>();
+        act.Should().Throw<ArgumentException>();
     }
 
     [Fact]

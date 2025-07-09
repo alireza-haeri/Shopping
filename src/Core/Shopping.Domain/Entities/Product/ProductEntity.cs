@@ -48,6 +48,11 @@ public class ProductEntity : BaseEntity<Guid>
         ProductState state, Guid? userId, Guid? categoryId)
         => Create(Guid.NewGuid(), title, description, price, quantity, state, userId, categoryId);
 
+    public DomainResult ChangeState(ProductState state)
+    {
+        State = state;
+        return DomainResult.Success;
+    }
 
     public enum ProductState
     {

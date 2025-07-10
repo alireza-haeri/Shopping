@@ -11,6 +11,7 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
     public UserEntity(string firstName, string lastName, string userName, string email)
         : base(userName)
     {
+        Id = Guid.NewGuid();
         FirstName = firstName;
         LastName = lastName;
         UserCode = Guid.NewGuid().ToString("N")[..7];
@@ -29,4 +30,9 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
 
     public DateTime CreatedDate { get; set; }
     public DateTime ModifyDate { get; set; }
+
+    public void AddProduct(ProductEntity product)
+    {
+        _products.Add(product);
+    }
 }

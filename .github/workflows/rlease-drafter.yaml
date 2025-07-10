@@ -5,7 +5,7 @@ on:
     branches:
       - master
   pull_request:
-    types: [merged]
+    types: [opened, reopened, edited, closed, synchronized]
 
 jobs:
   update_release_draft:

@@ -4,7 +4,7 @@ using Shopping.Domain.Common.ValueObjects;
 
 namespace Shopping.Domain.Entities.Product;
 
-public class ProductEntity : BaseEntity<Guid>
+public sealed class ProductEntity : BaseEntity<Guid>
 {
     private ProductEntity()
     {

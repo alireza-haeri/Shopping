@@ -2,7 +2,7 @@
 
 namespace Shopping.Domain.Entities.Product;
 
-public class CategoryEntity : BaseEntity<Guid>
+public sealed class CategoryEntity : BaseEntity<Guid>
 {
     private readonly List<ProductEntity> _products = [];
 

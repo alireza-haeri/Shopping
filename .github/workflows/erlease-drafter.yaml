@@ -1,13 +1,11 @@
-name : Release Drafter
+name: Release Drafter
 
 on: 
   push: 
-    bracches:
+    branches:
       - master
-    pull_request:
-      types: [Merged]
-    permissions:
-      contents: read
+  pull_request:
+    types: [merged]
 
 jobs:
   update_release_draft:
@@ -18,4 +16,4 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v6
         env:
-          GITGUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

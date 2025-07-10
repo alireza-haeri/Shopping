@@ -1,0 +1,30 @@
+﻿name: build and test
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v2
+
+      - name: ⚙️ Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 🏗️ Build project
+        run: dotnet build --no-restore
+
+      - name: 🧪 Run tests
+        run: dotnet test --no-build --verbosity normal

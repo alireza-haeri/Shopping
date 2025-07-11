@@ -8,7 +8,7 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
 {
     private readonly List<ProductEntity> _products = [];
 
-    public UserEntity(string firstName, string lastName, string userName, string email)
+    public UserEntity(string firstName, string? lastName, string userName, string email)
         : base(userName)
     {
         Id = Guid.NewGuid();
@@ -19,7 +19,7 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
     }
 
     public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public string? LastName { get; private set; }
     public string UserCode { get; private set; }
     public IReadOnlyList<ProductEntity> Products => _products;
 

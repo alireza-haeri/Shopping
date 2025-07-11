@@ -31,6 +31,14 @@ public class OperationResult<TResult> : IOperationResult
             ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
         };
     }
+    
+    public static OperationResult<TResult> FailureResult(List<KeyValuePair<string,string>> errorMessages)
+    {
+        return new OperationResult<TResult>()
+        {
+            ErrorMessages = errorMessages
+        };
+    }
 
     public static OperationResult<TResult> NotFoundResult()
     {

@@ -40,11 +40,11 @@ public class OperationResult<TResult> : IOperationResult
         };
     }
 
-    public static OperationResult<TResult> NotFoundResult()
+    public static OperationResult<TResult> NotFoundResult(string propertyName, string message)
     {
         return new OperationResult<TResult>()
         {
-            IsNotFount = true
+            ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
         };
     }
 }

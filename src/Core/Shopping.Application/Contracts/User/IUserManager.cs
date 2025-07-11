@@ -7,5 +7,6 @@ public interface IUserManager
 {
     Task<IdentityResult> PasswordCreateAsync(UserEntity user,string password, CancellationToken cancellationToken);
     Task<UserEntity?> FindByUserNameAsync(string userName, CancellationToken cancellationToken);
+    Task<UserEntity?> FindByEmailAsync(string email, CancellationToken cancellationToken);
     Task<IdentityResult> PasswordSignInAsync(UserEntity user, string password, bool rememberMe, CancellationToken cancellationToken);
 }

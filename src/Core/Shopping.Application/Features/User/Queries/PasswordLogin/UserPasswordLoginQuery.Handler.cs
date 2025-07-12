@@ -23,13 +23,13 @@ public class UserPasswordLoginQueryHandler(IUserManager userManager,IJwtService 
         if(user is null)
             return OperationResult<JwtAccessTokenModel>.NotFoundResult(nameof(request.UserNameOrEmail),"User not found");
 
-        var passwordValidation = await userManager.PasswordCreateAsync(user, request.Password, cancellationToken);
+        var passwordValidation = await userManager.ValidatePasswordAsync(user, request.Password, true, cancellationToken);
         if (passwordValidation.Succeeded)
         {
             var accessToken = await jwtService.GenerateJwtTokenAsync(user,cancellationToken);
             return OperationResult<JwtAccessTokenModel>.SuccessResult(accessToken);
         }
         
-        return OperationResult<JwtAccessTokenModel>.FailureResult(passwordValidation.Errors.ConvertToKeyValuePairs());
+        return OperationResult<JwtAccessTokenModel>.FailureResult(nameof(UserPasswordLoginQuery.Password),"Incorrect password");
     }
 }

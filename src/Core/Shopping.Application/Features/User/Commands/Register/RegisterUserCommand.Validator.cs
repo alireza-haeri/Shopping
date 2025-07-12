@@ -12,6 +12,6 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
         RuleFor(c=>c.FirstName).NotEmpty().MaximumLength(100);
         RuleFor(c=>c.LastName).MaximumLength(100);
         RuleFor(c => c.UserName).NotEmpty().MaximumLength(100);
-        RuleFor(c => c.PhoneNumber).NotEmpty().Length(11);
+        RuleFor(c => c.PhoneNumber).NotEmpty().Length(11).Matches("^[0-9]{11}$");
     }
 }

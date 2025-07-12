@@ -44,6 +44,7 @@ public class OperationResult<TResult> : IOperationResult
     {
         return new OperationResult<TResult>()
         {
+            IsNotFount = true,
             ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
         };
     }

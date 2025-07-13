@@ -12,10 +12,6 @@ public class RegisterUserCommandHandler(IUserManager userManager)
     public async ValueTask<OperationResult<bool>> Handle(RegisterUserCommand request,
         CancellationToken cancellationToken)
     {
-        var validationResult = await new RegisterUserCommandValidator().ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-            return OperationResult<bool>.FailureResult(validationResult.Errors.ConvertKeyValuePairs());
-
         var user = new UserEntity(request.FirstName, request.LastName, request.UserName, request.Email)
         {
             PhoneNumber = request.PhoneNumber

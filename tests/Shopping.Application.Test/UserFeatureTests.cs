@@ -2,8 +2,10 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using NSubstitute;
+using Shopping.Application.Common;
 using Shopping.Application.Contracts.User;
 using Shopping.Application.Contracts.User.Models;
+using Shopping.Application.Features.Common;
 using Shopping.Application.Features.User.Commands.Register;
 using Shopping.Application.Features.User.Queries.PasswordLogin;
 using Shopping.Application.Test.Extensions;
@@ -61,7 +63,9 @@ public class UserFeatureTests(ITestOutputHelper testOutputHelper)
 
         //Act
         var userRegisterCommandHandler = new RegisterUserCommandHandler(userManager);
-        var userRegisterResult = await userRegisterCommandHandler.Handle(registerUserRequest, CancellationToken.None);
+        var validationBehavior = new ValidateRequestBehavior<RegisterUserCommand, OperationResult<bool>>(new RegisterUserCommandValidator());
+        var userRegisterResult = await validationBehavior.Handle(registerUserRequest, CancellationToken.None,
+            userRegisterCommandHandler.Handle);
 
         userRegisterResult.IsSuccess.Should().Be(false);
 
@@ -90,7 +94,9 @@ public class UserFeatureTests(ITestOutputHelper testOutputHelper)
 
         //Act
         var userRegisterCommandHandler = new RegisterUserCommandHandler(userManager);
-        var userRegisterResult = await userRegisterCommandHandler.Handle(registerUserRequest, CancellationToken.None);
+        var validationBehavior = new ValidateRequestBehavior<RegisterUserCommand, OperationResult<bool>>(new RegisterUserCommandValidator());
+        var userRegisterResult = await validationBehavior.Handle(registerUserRequest, CancellationToken.None,
+            userRegisterCommandHandler.Handle);
 
         //Assertion
         userRegisterResult.IsSuccess.Should().Be(false);
@@ -266,16 +272,8 @@ public class UserFeatureTests(ITestOutputHelper testOutputHelper)
         var userPasswordLoginQuery = new UserPasswordLoginQuery(
             faker.Person.Email, password);
 
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
-
         var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-
+        
         var userManager = Substitute.For<IUserManager>();
         userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
             .Returns(Task.FromResult<UserEntity?>(null));
@@ -295,5 +293,47 @@ public class UserFeatureTests(ITestOutputHelper testOutputHelper)
         userPasswordLoginResult.IsSuccess.Should().Be(false);
         
         testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
+    }
+
+    [Fact]
+    public async Task Login_User_Inputs_Should_Be_Valid()
+    {
+        
+        //Arrange
+        var faker = new Faker();
+        var password = string.Empty;
+        var userPasswordLoginQuery = new UserPasswordLoginQuery(
+            faker.Person.Email, password);
+
+        var userEntity = new UserEntity(
+                faker.Person.FirstName,
+                faker.Person.LastName,
+                faker.Person.UserName,
+                faker.Person.Email)
+            { PhoneNumber = "09944853827", };
+
+        
+        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
+        
+        var userManager = Substitute.For<IUserManager>();
+        userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
+            .Returns(Task.FromResult<UserEntity?>(userEntity));
+
+        var jwtService = Substitute.For<IJwtService>();
+        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
+            .Returns(Task.FromResult(accessToken));
+
+        //Act
+        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
+        var validationBehavior = new ValidateRequestBehavior<UserPasswordLoginQuery, OperationResult<JwtAccessTokenModel>>(new UserPasswordLoginQueryValidator());
+        var userPasswordLoginResult = await validationBehavior.Handle(userPasswordLoginQuery, CancellationToken.None,
+            userPasswordLoginQueryHandler.Handle);
+
+        //Assertion
+        userPasswordLoginResult.Result.Should().Be(null);
+        userPasswordLoginResult.IsSuccess.Should().Be(false);
+        
+        testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
+        
     }
 }

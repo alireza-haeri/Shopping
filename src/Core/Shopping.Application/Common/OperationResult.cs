@@ -13,6 +13,8 @@ public class OperationResult<TResult> : IOperationResult
 
     public bool IsSuccess { get; set; }
     public bool IsNotFount { get; set; }
+    public string? ErrorMessage { get; set; }
+
     public List<KeyValuePair<string, string>>? ErrorMessages { get; set; }
 
     public static OperationResult<TResult> SuccessResult(TResult result)
@@ -31,8 +33,8 @@ public class OperationResult<TResult> : IOperationResult
             ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
         };
     }
-    
-    public static OperationResult<TResult> FailureResult(List<KeyValuePair<string,string>> errorMessages)
+
+    public static OperationResult<TResult> FailureResult(List<KeyValuePair<string, string>> errorMessages)
     {
         return new OperationResult<TResult>()
         {
@@ -46,6 +48,15 @@ public class OperationResult<TResult> : IOperationResult
         {
             IsNotFount = true,
             ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
+        };
+    }
+
+    public static OperationResult<TResult> NotFoundResult(string? message = null)
+    {
+        return new OperationResult<TResult>()
+        {
+            IsNotFount = true,
+            ErrorMessage = message
         };
     }
 }

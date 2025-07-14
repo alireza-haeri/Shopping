@@ -6,8 +6,9 @@ public sealed class CategoryEntity : BaseEntity<Guid>
 {
     private readonly List<ProductEntity> _products = [];
 
-    public CategoryEntity(string title, Guid? parentId)
+    public CategoryEntity(string title, Guid? parentId = null)
     {
+        Id = Guid.NewGuid();
         Title = title;
         ParentId = parentId;
     }

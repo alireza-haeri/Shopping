@@ -1,4 +1,5 @@
-﻿using Ardalis.GuardClauses;
+﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.GuardClauses;
 using Shopping.Domain.Common;
 using Shopping.Domain.Common.ValueObjects;
 
@@ -82,5 +83,12 @@ public sealed class ProductEntity : BaseEntity<Guid>
         CategoryId = categoryId.Value;
         
         _changeLogs.Add(LogValueObject.Log("Product Edited"));
+    }
+
+    public void AddImage([NotNull] ImageValueObject image)
+    {
+        Guard.Against.Null(image);
+        
+        _images.Add(image);
     }
 }

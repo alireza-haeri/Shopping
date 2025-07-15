@@ -139,20 +139,17 @@ public class CategoryFeatureTests
 
 
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
+        
         categoryRepositoryMock
             .GetByIdAsync(category.Id)!
             .Returns(Task.FromResult(default(CategoryEntity)));
-        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
         unitOfWorkMock.CategoryRepository.Returns(categoryRepositoryMock);
-
-        var validationBehavior =
-            new ValidateRequestBehavior<GetByIdCategoryQuery, OperationResult<GetByIdCategoryQueryResult>>(
-                _serviceProvider
-                    .GetRequiredService<IValidator<GetByIdCategoryQuery>>());
+        
         var queryHandler = new GetByIdCategoryQueryHandler(unitOfWorkMock);
 
         //Act
-        var queryResult = await validationBehavior.Handle(query, CancellationToken.None, queryHandler.Handle);
+        var queryResult = await Helpers.ValidateAndExecuteAsync(query,queryHandler,_serviceProvider);
 
         //Assertion
 

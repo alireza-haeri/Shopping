@@ -10,7 +10,10 @@
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98e58de2_002D6fcd_002D4c76_002D991f_002D00f092c3bb72/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.ProductTests.AddEntityTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.UserTests.UserEntityTest.Should_Add_Product_To_User&lt;/TestId&gt;&#xD;

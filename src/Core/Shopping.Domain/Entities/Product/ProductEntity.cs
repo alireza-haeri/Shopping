@@ -70,25 +70,38 @@ public sealed class ProductEntity : BaseEntity<Guid>
         Active = 2
     }
 
-    public void Edit(string title, string description, int price,int quantity, Guid? categoryId)
+    public void Edit(string? title, string? description, decimal? price, int? quantity, Guid? categoryId)
     {
-        Guard.Against.NullOrEmpty(title, message: "Invalid Title");
-        Guard.Against.NullOrEmpty(categoryId, message: "Invalid Category Id");
-        Guard.Against.NegativeOrZero(price, message: "Invalid Price");
-        Guard.Against.Negative(quantity, message: "Invalid Quantity");
-        
-        Title = title;
-        Description = description;
-        Price = price;
-        CategoryId = categoryId.Value;
-        
+        if (!string.IsNullOrEmpty(title))
+            Title = title;
+
+        if (!string.IsNullOrEmpty(description))
+            Description = description;
+
+        if (price != null)
+            Price = price.Value;
+
+        if (quantity != null)
+            Quantity = quantity.Value;
+
+        if (categoryId != null && categoryId != Guid.Empty)
+            CategoryId = categoryId.Value;
+
         _changeLogs.Add(LogValueObject.Log("Product Edited"));
     }
 
     public void AddImage([NotNull] ImageValueObject image)
     {
         Guard.Against.Null(image);
-        
+
         _images.Add(image);
+    }
+
+    public void RemoveImages([NotNull] string[] imageNames)
+    {
+        Guard.Against.Null(imageNames);
+
+        if (imageNames.Length != 0)
+            _images.RemoveAll(i => imageNames.Contains(i.FileName));
     }
 }

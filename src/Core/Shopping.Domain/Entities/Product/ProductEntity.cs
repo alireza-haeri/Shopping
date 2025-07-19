@@ -2,6 +2,7 @@
 using Ardalis.GuardClauses;
 using Shopping.Domain.Common;
 using Shopping.Domain.Common.ValueObjects;
+using Shopping.Domain.Entities.User;
 
 namespace Shopping.Domain.Entities.Product;
 
@@ -20,6 +21,13 @@ public sealed class ProductEntity : BaseEntity<Guid>
     public ProductState State { get; set; }
     public Guid UserId { get; private set; }
     public Guid CategoryId { get; private set; }
+
+    #region NavigationProperties
+
+    public UserEntity User { get; private set; }
+    public CategoryEntity Category { get; private set; }
+
+    #endregion
 
     public IReadOnlyList<ImageValueObject> Images => _images.AsReadOnly();
     public IReadOnlyList<LogValueObject> ChangeLogs => _changeLogs.AsReadOnly();
@@ -44,6 +52,35 @@ public sealed class ProductEntity : BaseEntity<Guid>
             State = state,
             UserId = userId.Value,
             CategoryId = categoryId.Value
+        };
+
+        product._changeLogs.Add(LogValueObject.Log("Product Created"));
+
+        return product;
+    }
+
+    public static ProductEntity Create(Guid? id, string title, string description, decimal price, int quantity,
+        ProductState state, UserEntity user, CategoryEntity category)
+    {
+        Guard.Against.NullOrEmpty(title, message: "Invalid Title");
+        Guard.Against.NullOrEmpty(id, message: "Invalid Id");
+        Guard.Against.Null(user, message: "Invalid User");
+        Guard.Against.Null(category, message: "Invalid Category");
+        Guard.Against.NegativeOrZero(price, message: "Invalid Price");
+        Guard.Against.Negative(quantity, message: "Invalid Quantity");
+
+        var product = new ProductEntity()
+        {
+            Id = id.Value,
+            Title = title,
+            Description = description,
+            Price = price,
+            Quantity = quantity,
+            State = state,
+            User = user,
+            UserId = user.Id,
+            Category = category,
+            CategoryId = category.Id,
         };
 
         product._changeLogs.Add(LogValueObject.Log("Product Created"));

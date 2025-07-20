@@ -1,11 +1,31 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAutoMapperConfigurationException_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F9a00b514f1a941dd9f060453de7f7c4043200_003Fb3_003F82a0bf71_003FAutoMapperConfigurationException_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ACancellationToken_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F2565b9d99fdde488bc7801b84387b2cc864959cfb63212e1ff576fc9c6bb7e_003FCancellationToken_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AGuardAgainstNegativeExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F9d2c589c1992461bdff48d258cb0ea2fe4cb57c72032f2c7928a96f9a9fcfc4_003FGuardAgainstNegativeExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIGlobalConfiguration_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3ac473df69ae4ed5bc93c60d4af4617447400_003F02_003F71a910f2_003FIGlobalConfiguration_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AList_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F1b81cb3be224213a6a73519b6e340a628d9a1fb8629c351a186a26f6376669_003FList_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMapperConfigurationExpression_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F9a00b514f1a941dd9f060453de7f7c4043200_003F88_003F14eba3a7_003FMapperConfigurationExpression_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ARuntimeType_002ECoreCLR_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fad1d58b8dd22123dfae3f2cf5d8b199992465c9c344d032f93a826d8e5539ff_003FRuntimeType_002ECoreCLR_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AThreadLocalContext_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F402b2077f38742cb9b381ab9e79e493229c00_003F55_003Fc39b3289_003FThreadLocalContext_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATypeMapConfiguration_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3ac473df69ae4ed5bc93c60d4af4617447400_003F15_003F3874d8a9_003FTypeMapConfiguration_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\AliRezaHM\AppData\Local\JetBrains\Rider2025.1\resharper-host\temp\Rider\vAny\CoverageData\_Shopping.-156869453\Snapshot\snapshot.utdcvr</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6d71314c_002D6668_002D4464_002D8cee_002Dbc409dbed374/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Product_Details_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Products_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Products_With_Null_CategoryId_Should_Be_Success&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=79b1ad0c_002D63c5_002D4b0b_002Db908_002D78945abc020e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create_Product_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98e58de2_002D6fcd_002D4c76_002D991f_002D00f092c3bb72/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.ProductTests.AddEntityTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.UserTests.UserEntityTest.Should_Add_Product_To_User&lt;/TestId&gt;&#xD;
@@ -23,4 +43,12 @@
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests.Get_Category_By_Id_Should_Be_NotFound&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afc6f980_002D5753_002D4dac_002Db03a_002D71bdf4cec4fb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Product_Details_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f6b6c11a_002D8b9e_002D4fe4_002Dad1d_002D5ca7a5e2d87e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

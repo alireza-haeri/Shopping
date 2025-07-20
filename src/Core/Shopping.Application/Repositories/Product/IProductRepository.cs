@@ -8,4 +8,5 @@ public interface IProductRepository
     Task<ProductEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<ProductEntity?> GetDetailsByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<List<ProductEntity>> GetProductsAsync(string title,int currentPage,int pageCount,Guid? categoryId,CancellationToken cancellationToken);
+    Task DeleteAsync(ProductEntity product, CancellationToken cancellationToken);
 }

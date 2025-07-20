@@ -589,7 +589,8 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetProductsAsync(Arg.Any<string>(),Arg.Any<int>(),Arg.Any<int>(),Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetProductsAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<Guid>(),
+                CancellationToken.None)!
             .Returns(Task.FromResult(products));
 
         categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
@@ -608,7 +609,7 @@ public class ProductFeaturesTests
 
         //Assertion
         result.IsSuccess.Should().Be(true);
-        
+
         result.Result.Should().AllSatisfy(p =>
         {
             p.Title.Should().NotBeNullOrEmpty();
@@ -662,7 +663,8 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetProductsAsync(Arg.Any<string>(),Arg.Any<int>(),Arg.Any<int>(),Arg.Any<Guid?>(), CancellationToken.None)!
+        productRepositoryMock.GetProductsAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<Guid?>(),
+                CancellationToken.None)!
             .Returns(Task.FromResult(products));
 
         fileServiceMock.GetFilesByNameAsync(Arg.Any<List<string>>(), CancellationToken.None)
@@ -678,7 +680,7 @@ public class ProductFeaturesTests
 
         //Assertion
         result.IsSuccess.Should().Be(true);
-        
+
         result.Result.Should().AllSatisfy(p =>
         {
             p.Title.Should().NotBeNullOrEmpty();
@@ -687,6 +689,73 @@ public class ProductFeaturesTests
             p.ProductImage.Should().NotBeNull();
         });
 
+        _testOutputHelper.WriteLineOperationResultErrors(result);
+    }
+    
+    [Fact]
+    public async Task Delete_Product_With_Valid_Parameters_Should_Be_Success()
+    {
+        //Arrange
+        var faker = new Faker();
+        var command = new DeleteProductCommand(Guid.NewGuid());
+
+        var product = ProductEntity.Create(
+            Guid.NewGuid(),
+            faker.Lorem.Sentence(2),
+            faker.Lorem.Sentence(5),
+            decimal.Parse(faker.Commerce.Price()),
+            3,
+            ProductEntity.ProductState.Active,
+            Guid.NewGuid(),
+            Guid.NewGuid());
+
+        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
+        var productRepositoryMock = Substitute.For<IProductRepository>();
+        var fileServiceMock = Substitute.For<IFileService>();
+
+        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+            .Returns(Task.FromResult(product));
+        productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
+            .Returns(Task.CompletedTask);
+        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
+            .Returns(Task.FromResult);
+        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
+
+        //Act
+        var handler = new DeleteProductCommandHandler(unitOfWorkMuck, fileServiceMock);
+        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
+
+        //Assertion
+        result.Result.Should().BeTrue();
+        _testOutputHelper.WriteLineOperationResultErrors(result);
+    }
+    
+    [Fact]
+    public async Task Delete_Product_With_Null_ProductId_Should_Be_Success()
+    {
+        //Arrange
+        var command = new DeleteProductCommand(Guid.Empty);
+
+        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
+        var productRepositoryMock = Substitute.For<IProductRepository>();
+        var fileServiceMock = Substitute.For<IFileService>();
+
+        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)
+            .Returns(Task.FromResult<ProductEntity?>(null));
+        productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
+            .Returns(Task.CompletedTask);
+        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
+            .Returns(Task.FromResult);
+        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
+
+        //Act
+        var handler = new DeleteProductCommandHandler(unitOfWorkMuck, fileServiceMock);
+        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
+
+        //Assertion
+        result.Result.Should().BeFalse();
+        result.ErrorMessages.Should().NotBeNullOrEmpty();
+        
         _testOutputHelper.WriteLineOperationResultErrors(result);
     }
 }

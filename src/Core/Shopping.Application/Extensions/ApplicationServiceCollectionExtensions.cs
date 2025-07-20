@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Shopping.Application.Common.MappingConfiguration;
 using Shopping.Application.Common.Validation;
 
 namespace Shopping.Application.Extensions;
@@ -41,6 +42,13 @@ public static class ApplicationServiceCollectionExtensions
             services.AddTransient(validatorInterfaces, _ => validator);
         }
 
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(RegisterApplicationMappers));
+        
         return services;
     }
 }

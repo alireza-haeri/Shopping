@@ -41,6 +41,13 @@ public class OperationResult<TResult> : IOperationResult
             ErrorMessages = errorMessages
         };
     }
+    public static OperationResult<TResult> DomainFailureResult(string errorMessage)
+    {
+        return new OperationResult<TResult>()
+        {
+            ErrorMessages = [new KeyValuePair<string, string>("DomainError", errorMessage)]
+        };
+    }
 
     public static OperationResult<TResult> NotFoundResult(string propertyName, string message)
     {

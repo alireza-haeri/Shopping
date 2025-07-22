@@ -23,7 +23,9 @@ internal class ProductEntityConfiguration : IEntityTypeConfiguration<ProductEnti
             .IsUnicode(false);
 
         builder.HasIndex(p => p.Title);
-        builder.HasIndex(p => new { p.Title, p.State, p.Price, p.Quantity });
+        builder.HasIndex(p => p.State);
+        builder.HasIndex(p => p.Price);
+        builder.HasIndex(p => p.Quantity);
 
         builder.OwnsMany(p => p.Images, navigationBuilder => { navigationBuilder.ToJson("Images"); });
         builder.OwnsMany(p => p.ChangeLogs, navigationBuilder => { navigationBuilder.ToJson("ChangeLogs"); });

@@ -8,5 +8,5 @@ public sealed class RoleClaimEntity : IdentityRoleClaim<Guid>,IEntity
     public RoleEntity Role { get; set; }
     
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifyDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 }

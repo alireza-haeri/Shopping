@@ -9,11 +9,12 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AThreadLocalContext_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F402b2077f38742cb9b381ab9e79e493229c00_003F55_003Fc39b3289_003FThreadLocalContext_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATypeMapConfiguration_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3ac473df69ae4ed5bc93c60d4af4617447400_003F15_003F3874d8a9_003FTypeMapConfiguration_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\AliRezaHM\AppData\Local\JetBrains\Rider2025.1\resharper-host\temp\Rider\vAny\CoverageData\_Shopping.-156869453\Snapshot\snapshot.utdcvr</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6d71314c_002D6668_002D4464_002D8cee_002Dbc409dbed374/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=6d71314c_002D6668_002D4464_002D8cee_002Dbc409dbed374/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Product_Details_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Products_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Products_With_Null_CategoryId_Should_Be_Success&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Delete_Product_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	

@@ -237,7 +237,7 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
             .Returns(Task.FromResult(product));
 
         categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
@@ -303,7 +303,7 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
             .Returns(Task.FromResult(product));
 
         categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
@@ -366,7 +366,7 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
             .Returns(Task.FromResult(product));
 
         categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
@@ -437,7 +437,7 @@ public class ProductFeaturesTests
         var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
             .Returns(Task.FromResult(product));
 
         categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
@@ -713,7 +713,7 @@ public class ProductFeaturesTests
         var productRepositoryMock = Substitute.For<IProductRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
             .Returns(Task.FromResult(product));
         productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
             .Returns(Task.CompletedTask);
@@ -740,7 +740,7 @@ public class ProductFeaturesTests
         var productRepositoryMock = Substitute.For<IProductRepository>();
         var fileServiceMock = Substitute.For<IFileService>();
 
-        productRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)
+        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)
             .Returns(Task.FromResult<ProductEntity?>(null));
         productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
             .Returns(Task.CompletedTask);

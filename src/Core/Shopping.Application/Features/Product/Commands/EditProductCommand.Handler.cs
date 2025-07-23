@@ -21,7 +21,7 @@ public class EditProductCommandHandler(IUnitOfWork unitOfWork, IFileService file
                 return OperationResult<bool>.FailureResult(nameof(EditProductCommand.CategoryId), "Category not found");
         }
 
-        var product = await unitOfWork.ProductRepository.GetByIdAsync(request.ProductId, cancellationToken);
+        var product = await unitOfWork.ProductRepository.GetByIdAsTrackAsync(request.ProductId, cancellationToken);
         if (product is null)
             return OperationResult<bool>.FailureResult(nameof(EditProductCommand.ProductId), "Product not found");
 

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Per
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Persistence.Test", "tests\Shopping.Infrastructure.Persistence.Test\Shopping.Infrastructure.Persistence.Test.csproj", "{13FA4503-4683-462D-8EDD-38E84FF898DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Identity", "Infrastructure\Shopping.Infrastructure.Identity\Shopping.Infrastructure.Identity.csproj", "{60D67DE9-AB54-4B78-81CF-D411E59687F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,7 @@ Global
 		{36617759-5AFB-4D30-99CE-5A7683E9050D} = {D701FF8D-DADD-45A6-943A-6E6B8E2DD519}
 		{896EB244-B3D4-4320-92AC-2C63441FDD5D} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
 		{13FA4503-4683-462D-8EDD-38E84FF898DB} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{570CACD8-6D3A-4C94-A99C-A1A8AC873381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -60,5 +63,9 @@ Global
 		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

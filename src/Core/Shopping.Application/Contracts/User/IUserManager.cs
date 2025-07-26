@@ -9,5 +9,5 @@ public interface IUserManager
     Task<UserEntity?> FindByUserNameAsync(string userName, CancellationToken cancellationToken);
     Task<UserEntity?> FindByEmailAsync(string email, CancellationToken cancellationToken);
     Task<UserEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<IdentityResult> ValidatePasswordAsync(UserEntity user, string password, bool rememberMe, CancellationToken cancellationToken);
+    Task<IdentityResult> ValidatePasswordAsync(UserEntity user, string password, CancellationToken cancellationToken);
 }

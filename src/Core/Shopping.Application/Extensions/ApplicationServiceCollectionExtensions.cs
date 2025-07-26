@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using Shopping.Application.Common.MappingConfiguration;
 using Shopping.Application.Common.Validation;
+using Shopping.Application.Features.Common;
 
 namespace Shopping.Application.Extensions;
 
@@ -48,6 +50,19 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplicationAutoMapper(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(RegisterApplicationMappers));
+        
+        return services;
+    }
+
+    public static IServiceCollection AddApplicationMediatorServices(this IServiceCollection services)
+    {
+        services.AddMediator(options =>
+        {
+            options.ServiceLifetime = ServiceLifetime.Transient;
+            options.Namespace = "Shopping.Application.GeneratedMediatorServices";
+        });
+        
+        services.AddTransient(typeof(IPipelineBehavior<,>),typeof(ValidateRequestBehavior<,>));
         
         return services;
     }

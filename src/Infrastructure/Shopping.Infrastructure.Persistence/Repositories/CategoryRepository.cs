@@ -17,6 +17,11 @@ internal class CategoryRepository(ShoppingDbContext db) : BaseRepository<Categor
        return await base.TableNoTracking.FirstOrDefaultAsync(c => id.Equals(c.Id),cancellationToken);
     }
 
+    public async Task<CategoryEntity?> GetByIdWithTrackingAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await Table.FirstOrDefaultAsync(c => c.Id.Equals(id), cancellationToken);
+    }
+
     public async Task<List<CategoryEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await TableNoTracking.ToListAsync(cancellationToken);

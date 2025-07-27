@@ -52,6 +52,7 @@ public static class IdentityServiceCollectionExtensions
             config.Audience = jwtModel.Audience;
             config.Issuer = jwtModel.Issuer;
             config.ExpirationMinute = jwtModel.ExpirationMinute;
+            config.EncryptionKey = jwtModel.EncryptionKey;
         });
 
         services.AddScoped<IJwtService, JwtServiceImplementation>();
@@ -63,4 +64,4 @@ public static class IdentityServiceCollectionExtensions
 
 public record AddIdentityServicesModel(AddIdentityServicesJwtModel jwtModel);
 
-public record AddIdentityServicesJwtModel(string SignInKey, string Audience, string Issuer, int ExpirationMinute);
+public record AddIdentityServicesJwtModel(string SignInKey,string EncryptionKey, string Audience, string Issuer, int ExpirationMinute);

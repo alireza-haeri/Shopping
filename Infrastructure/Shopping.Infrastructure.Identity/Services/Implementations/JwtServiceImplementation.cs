@@ -23,6 +23,12 @@ internal class JwtServiceImplementation(
         var claims = await claimPrincipalFactory.CreateAsync(user);
 
         var secretKey = Encoding.UTF8.GetBytes(_jwtConfiguration.SignInKey);
+
+        var encryptionKey = Encoding.UTF8.GetBytes(_jwtConfiguration.EncryptionKey);
+        var encryptingCredential = new EncryptingCredentials(
+            new SymmetricSecurityKey(encryptionKey), SecurityAlgorithms.Aes128KW,
+            SecurityAlgorithms.Aes128CbcHmacSha256);
+        
         var signInCredential =
             new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256);
         var descriptor = new SecurityTokenDescriptor()
@@ -33,7 +39,9 @@ internal class JwtServiceImplementation(
             NotBefore = DateTime.Now.AddMinutes(0),
             Expires = DateTime.Now.AddMinutes(_jwtConfiguration.ExpirationMinute),
             SigningCredentials = signInCredential,
-            Subject = new ClaimsIdentity(claims.Claims)
+            Subject = new ClaimsIdentity(claims.Claims),
+            EncryptingCredentials = encryptingCredential,
+            TokenType = "JWE"
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

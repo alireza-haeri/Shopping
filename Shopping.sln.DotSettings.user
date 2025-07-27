@@ -46,6 +46,7 @@
     &lt;TestId&gt;xUnit::13FA4503-4683-462D-8EDD-38E84FF898DB::net9.0::Shopping.Infrastructure.Persistence.Test.UnitOfWorkTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Register_User_Should_be_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Getting_Access_Token_Should_be_Success&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Jwe_Token_Should_Have_Claims&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

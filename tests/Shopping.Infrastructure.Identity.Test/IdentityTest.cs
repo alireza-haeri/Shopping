@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.IdentityModel.Tokens.Jwt;
+using FluentAssertions;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Shopping.Application.Features.User.Commands.Register;
 using Shopping.Application.Features.User.Queries.PasswordLogin;
 
@@ -45,5 +47,45 @@ public class IdentityTests(IdentityTestSetup setup) : IClassFixture<IdentityTest
 
         gettingAccessTokenResult.IsSuccess.Should().Be(true);
         gettingAccessTokenResult.Result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Jwe_Token_Should_Have_Claims()
+    {
+        await _sender.Send(new RegisterUserCommand(
+            "FirstName3",
+            null,
+            "username3",
+            "email2@gmail.com",
+            "09123456543",
+            "password123453",
+            "password123453"
+        ));
+
+        var gettingAccessTokenResult = await _sender.Send(
+            new UserPasswordLoginQuery("username3", "password123453"));
+
+        gettingAccessTokenResult.IsSuccess.Should().Be(true);
+        gettingAccessTokenResult.Result.Should().NotBeNull();
+
+        var signInKey = "Test-Test-Test-Test-Test-SignIn-Key_Test"u8.ToArray();
+        var encryptionKey = "16CharEncryptKey"u8.ToArray();
+
+        var tokenValidation = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            IssuerSigningKey = new SymmetricSecurityKey(signInKey),
+            TokenDecryptionKey = new SymmetricSecurityKey(encryptionKey)
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var claimPrincipals =
+            await tokenHandler.ValidateTokenAsync(gettingAccessTokenResult.Result.AccessToken, tokenValidation);
+        
+        claimPrincipals.Should().NotBeNull();
+        claimPrincipals.Claims.Should().NotBeNullOrEmpty();
     }
 }

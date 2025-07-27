@@ -45,10 +45,13 @@ public class IdentityTestSetup : IAsyncLifetime
             .RegisterApplicationValidator()
             .AddPersistenceDbContext(new AddPersistenceDbContextModel(_msSqlContainer.GetConnectionString()))
             .AddIdentityServices(new AddIdentityServicesModel(
-                new AddIdentityServicesJwtModel("Test-Test-Test-Test-Test-SignIn-Key_Test", "TestAudience",
+                new AddIdentityServicesJwtModel(
+                    "Test-Test-Test-Test-Test-SignIn-Key_Test",
+                    "16CharEncryptKey",
+                    "TestAudience",
                     "TestIssuer", 60)))
             .AddLogging(logging => logging.AddConsole());
-        
+
         ServiceProvider = serviceCollection.BuildServiceProvider(false);
     }
 

@@ -13,9 +13,7 @@ namespace Shopping.Infrastructure.Identity.Extensions;
 
 public static class IdentityServiceCollectionExtensions
 {
-    public record AddIdentityServicesModel(AddIdentityServicesJwtModel jwtModel);
-
-    public record AddIdentityServicesJwtModel(string SignInKey, string Audience, string Issuer, int ExpirationMinute);
+    
     
     public static IServiceCollection AddIdentityServices(this IServiceCollection services,AddIdentityServicesModel model)
     {
@@ -62,3 +60,7 @@ public static class IdentityServiceCollectionExtensions
         return services;
     }
 }
+
+public record AddIdentityServicesModel(AddIdentityServicesJwtModel jwtModel);
+
+public record AddIdentityServicesJwtModel(string SignInKey, string Audience, string Issuer, int ExpirationMinute);

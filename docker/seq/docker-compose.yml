@@ -1,0 +1,18 @@
+services:
+  shoppin-seq:
+    image: datalust/seq:latest
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=true
+    volumes:
+      - shoppin-seq-data:/data
+    networks:
+      - shoppin-net
+
+volumes:
+  shoppin-seq-data:
+
+networks:
+  shoppin-net:

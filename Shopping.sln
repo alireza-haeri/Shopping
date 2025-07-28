@@ -33,6 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq", "seq", "{959072C0-EEF
 		docker\seq\docker-compose.yml = docker\seq\docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "minio", "minio", "{8A89DACF-71CE-4A77-B401-C62F222A7432}"
+	ProjectSection(SolutionItems) = preProject
+		docker\minio\docker-compose.yml = docker\minio\docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +56,7 @@ Global
 		{DE4CD50E-6483-40B1-AE55-0BC6584175C1} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
 		{76488A5D-1466-41F5-B951-0AA61C50F365} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
 		{959072C0-EEFB-480C-82D4-F47E91E67307} = {EBDF2FCD-C23E-49F2-A1A5-23C49C647354}
+		{8A89DACF-71CE-4A77-B401-C62F222A7432} = {EBDF2FCD-C23E-49F2-A1A5-23C49C647354}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{570CACD8-6D3A-4C94-A99C-A1A8AC873381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

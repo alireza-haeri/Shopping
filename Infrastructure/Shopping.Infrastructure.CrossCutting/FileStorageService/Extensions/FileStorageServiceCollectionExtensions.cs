@@ -20,9 +20,9 @@ public static class FileStorageServiceCollectionExtensions
         });
 
         services.AddScoped<IFileService, MinioStorageService>();
-        services.Configure<MinioConfiguration>(configuration =>
+        services.Configure<MinioConfiguration>(config =>
         {
-            configuration.ExpiryFileUrlMinute = model.ExpiryFileUrlMinute;
+            config.ExpiryFileUrlMinute = model.ExpiryFileUrlMinute;
         });
 
         return services;

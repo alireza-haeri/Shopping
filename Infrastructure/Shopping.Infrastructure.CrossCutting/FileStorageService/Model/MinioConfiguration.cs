@@ -1,6 +1,6 @@
 ﻿namespace Shopping.Infrastructure.CrossCutting.FileStorageService.Model;
 
-public class MinioConfiguration
+internal class MinioConfiguration
 {
     public int ExpiryFileUrlMinute { get; set; }
 }

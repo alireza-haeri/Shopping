@@ -1,14 +1,18 @@
 ﻿using FileTypeChecker;
+using Microsoft.Extensions.Options;
 using Minio;
+using Minio.DataModel;
 using Minio.DataModel.Args;
+using Minio.Exceptions;
 using Shopping.Application.Contracts.FileService.Interfaces;
 using Shopping.Application.Contracts.FileService.Models;
 using Shopping.Infrastructure.CrossCutting.FileStorageService.Model;
 
 namespace Shopping.Infrastructure.CrossCutting.FileStorageService.Implementations;
 
-internal class MinioStorageService(IMinioClient minioClient,MinioConfiguration configuration) : IFileService
+internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfiguration> configuration) : IFileService
 {
+    private readonly MinioConfiguration _minioConfiguration = configuration.Value;
     private const string ShoppingBucketName = "shopping.files";
 
     private async Task CreateBucketIfMissingAsync(CancellationToken cancellationToken = default)
@@ -33,6 +37,9 @@ internal class MinioStorageService(IMinioClient minioClient,MinioConfiguration c
             await using var memoryStream = new MemoryStream(Convert.FromBase64String(file.Base64File));
             var fileName = $"{Guid.NewGuid():N}.{FileTypeValidator.GetFileType(memoryStream).Extension}";
             var fileType = !string.IsNullOrEmpty(file.FileContent) ? file.FileContent : "application/octet-stream";
+            
+            memoryStream.Position = 0;
+            
             var createFileArg = new PutObjectArgs()
                 .WithBucket(ShoppingBucketName)
                 .WithStreamData(memoryStream)
@@ -61,14 +68,21 @@ internal class MinioStorageService(IMinioClient minioClient,MinioConfiguration c
                 .WithBucket(ShoppingBucketName)
                 .WithObject(fileName);
 
-            var objectInfoResult = await minioClient.StatObjectAsync(objectInfo, cancellationToken);
-            if (objectInfoResult is null)
+            ObjectStat objectInfoResult;
+            
+            try
+            {
+                objectInfoResult = await minioClient.StatObjectAsync(objectInfo, cancellationToken);
+            }
+            catch (ObjectNotFoundException e)
+            {
                 continue;
+            }
 
             var sasUrlArgs = new PresignedGetObjectArgs()
                 .WithBucket(ShoppingBucketName)
                 .WithObject(fileName)
-                .WithExpiry((int)TimeSpan.FromMinutes(configuration.ExpiryFileUrlMinute).TotalSeconds);
+                .WithExpiry((int)TimeSpan.FromMinutes(_minioConfiguration.ExpiryFileUrlMinute).TotalSeconds);
 
             var fileUrl = await minioClient.PresignedGetObjectAsync(sasUrlArgs);
             

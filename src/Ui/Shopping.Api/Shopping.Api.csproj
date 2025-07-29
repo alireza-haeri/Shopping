@@ -4,13 +4,12 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>  
 
     <ItemGroup>
-      
       <ProjectReference Include="..\Shopping.WebFramework\Shopping.WebFramework.csproj" />
-    </ItemGroup>
-
-   
+    </ItemGroup>  
 
 </Project>

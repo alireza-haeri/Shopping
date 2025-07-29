@@ -93,7 +93,7 @@ public static class WebApplicationBuilderExtensions
 
                     var securityStamp =
                         claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
-                    if (securityStamp!.IsNullOrEmpty())
+                    if (string.IsNullOrEmpty(securityStamp))
                         context.Fail("This token has no secuirty stamp");
 
                     var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);

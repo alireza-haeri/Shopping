@@ -27,6 +27,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.CrossCutting", "Infrastructure\Shopping.Infrastructure.CrossCutting\Shopping.Infrastructure.CrossCutting.csproj", "{76488A5D-1466-41F5-B951-0AA61C50F365}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{EBDF2FCD-C23E-49F2-A1A5-23C49C647354}"
+	ProjectSection(SolutionItems) = preProject
+		docker\compose.yaml = docker\compose.yaml
+		docker\Dockerfile = docker\Dockerfile
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq", "seq", "{959072C0-EEFB-480C-82D4-F47E91E67307}"
 	ProjectSection(SolutionItems) = preProject
@@ -40,11 +44,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "minio", "minio", "{8A89DACF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.FileStorage.Minio.Test", "tests\Shopping.Infrastructure.FileStorage.Minio.Test\Shopping.Infrastructure.FileStorage.Minio.Test.csproj", "{0F31B557-4529-4EB1-B247-398F884DCFF4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ui", "ui", "{A8CB4DDB-918B-4866-B30B-E44D1CC26915}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{A8CB4DDB-918B-4866-B30B-E44D1CC26915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.WebFramework", "ui\Shopping.WebFramework\Shopping.WebFramework.csproj", "{B744B302-50AA-4E5B-A567-00C4218CDE87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.WebFramework", "src\Ui\Shopping.WebFramework\Shopping.WebFramework.csproj", "{B744B302-50AA-4E5B-A567-00C4218CDE87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Api", "ui\Shopping.Api\Shopping.Api.csproj", "{DD50909A-B02E-4DD9-A267-AEA277CD06D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Api", "src\Ui\Shopping.Api\Shopping.Api.csproj", "{DD50909A-B02E-4DD9-A267-AEA277CD06D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +72,7 @@ Global
 		{0F31B557-4529-4EB1-B247-398F884DCFF4} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
 		{B744B302-50AA-4E5B-A567-00C4218CDE87} = {A8CB4DDB-918B-4866-B30B-E44D1CC26915}
 		{DD50909A-B02E-4DD9-A267-AEA277CD06D7} = {A8CB4DDB-918B-4866-B30B-E44D1CC26915}
+		{A8CB4DDB-918B-4866-B30B-E44D1CC26915} = {D701FF8D-DADD-45A6-943A-6E6B8E2DD519}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{570CACD8-6D3A-4C94-A99C-A1A8AC873381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -7,15 +7,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Core\Shopping.Application\Shopping.Application.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Shopping.Infrastructure.CrossCutting\Shopping.Infrastructure.CrossCutting.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Shopping.Infrastructure.Identity\Shopping.Infrastructure.Identity.csproj"/>
+        <ProjectReference Include="..\..\src\Infrastructure\Shopping.Infrastructure.Persistence\Shopping.Infrastructure.Persistence.csproj"/>
+        <ProjectReference Include="..\..\src\Core\Shopping.Application\Shopping.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11"/>
+        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0"/>
+        <PackageReference Include="Asp.Versioning.Http" Version="8.1.0"/>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0"/>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
     </ItemGroup>
-    
+
 </Project>

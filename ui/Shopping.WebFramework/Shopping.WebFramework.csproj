@@ -13,5 +13,9 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\Core\Shopping.Application\Shopping.Application.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
+    </ItemGroup>
     
 </Project>

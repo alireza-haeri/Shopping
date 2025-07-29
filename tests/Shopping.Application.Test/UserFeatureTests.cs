@@ -308,7 +308,7 @@ public class UserFeatureTests
 
         //Assertion
         userPasswordLoginResult.Result.Should().BeNull();
-        userPasswordLoginResult.IsNotFount.Should().Be(true);
+        userPasswordLoginResult.IsNotFound.Should().Be(true);
         userPasswordLoginResult.IsSuccess.Should().Be(false);
 
         _testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);

@@ -154,7 +154,7 @@ public class CategoryFeatureTests
         //Assertion
 
         queryResult.IsSuccess.Should().BeFalse();
-        queryResult.IsNotFount.Should().BeTrue();
+        queryResult.IsNotFound.Should().BeTrue();
         queryResult.Result.Should().BeNull();
         
         _testOutputHelper.WriteLineOperationResultErrors(queryResult);

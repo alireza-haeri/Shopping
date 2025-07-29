@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NSwag;
@@ -8,9 +9,15 @@ namespace Shopping.WebFramework.Swagger;
 
 public static class SwaggerConfigurationExtensions
 {
-    public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder
-    ,params string[] versions)
+    public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
     {
+        var versions = builder.Configuration
+            .GetSection("Swagger")
+            .GetSection("Versions")
+            .Get<string[]>();
+
+        if (versions is null || versions.Length == 0)
+            throw new ArgumentNullException($"SwaggerVersions");
 
         foreach (var version in versions)
         {
@@ -27,15 +34,14 @@ public static class SwaggerConfigurationExtensions
                     Type = OpenApiSecuritySchemeType.Http,
                     Scheme = "Bearer"
                 });
-                
+
                 options.OperationProcessors
                     .Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
-                
+
                 options.DocumentProcessors.Add(new ApiVersionDocumentProcessor());
             });
-            
         }
-        
+
         return builder;
     }
 
@@ -43,7 +49,7 @@ public static class SwaggerConfigurationExtensions
     {
         if (app.Environment.IsProduction())
             return app;
-        
+
         app.UseOpenApi();
 
         app.UseSwaggerUi(options =>

@@ -1,0 +1,22 @@
+﻿services:
+  shopping-minio:
+    image: minio/minio:latest
+    container_name: shopping-minio
+    ports:
+      - "9000:9000"       # Web UI & S3 API
+      - "9001:9001"       # Admin Console
+    volumes:
+      - shopping-minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=shoppingadmin
+      - MINIO_ROOT_PASSWORD=shopping12345
+    command: server /data --console-address ":9001"
+    restart: always
+    networks:
+      - shopping-net
+
+volumes:
+  shopping-minio-data:
+
+networks:
+  shopping-net:

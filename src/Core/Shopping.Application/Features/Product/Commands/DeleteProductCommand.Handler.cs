@@ -11,7 +11,7 @@ public class DeleteProductCommandHandler(IUnitOfWork unitOfWork, IFileService fi
     public async ValueTask<OperationResult<bool>> Handle(DeleteProductCommand request,
         CancellationToken cancellationToken)
     {
-        var product = await unitOfWork.ProductRepository.GetByIdAsync(request.Id, cancellationToken);
+        var product = await unitOfWork.ProductRepository.GetByIdAsTrackAsync(request.Id, cancellationToken);
         if (product is null)
             return OperationResult<bool>.NotFoundResult(nameof(DeleteProductCommand.Id), "Product not found");
 

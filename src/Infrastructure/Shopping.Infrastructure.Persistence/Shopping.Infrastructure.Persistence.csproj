@@ -9,10 +9,15 @@
     <ItemGroup>
       <PackageReference Include="EntityFrameworkCore.CommonTools" Version="2.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Core\Shopping.Application\Shopping.Application.csproj" />
       <ProjectReference Include="..\..\Core\Shopping.Domain\Shopping.Domain.csproj" />
     </ItemGroup>
 

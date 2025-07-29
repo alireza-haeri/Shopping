@@ -29,7 +29,7 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
     public ICollection<UserTokenEntity> UserTokens { get; set; } = [];
 
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifyDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 
     public void AddProduct(ProductEntity product)
     {

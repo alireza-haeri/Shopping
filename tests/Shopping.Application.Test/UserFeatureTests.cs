@@ -144,7 +144,7 @@ public class UserFeatureTests
         var userManager = Substitute.For<IUserManager>();
         userManager.FindByUserNameAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
             .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
+        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
             .Returns(Task.FromResult(IdentityResult.Success));
 
         var jwtService = Substitute.For<IJwtService>();
@@ -183,7 +183,7 @@ public class UserFeatureTests
         var userManager = Substitute.For<IUserManager>();
         userManager.FindByUserNameAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
             .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
+        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
             .Returns(Task.FromResult(IdentityResult.Failed()));
 
         var jwtService = Substitute.For<IJwtService>();
@@ -224,7 +224,7 @@ public class UserFeatureTests
         var userManager = Substitute.For<IUserManager>();
         userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
             .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
+        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
             .Returns(Task.FromResult(IdentityResult.Success));
 
         var jwtService = Substitute.For<IJwtService>();
@@ -263,7 +263,7 @@ public class UserFeatureTests
         var userManager = Substitute.For<IUserManager>();
         userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
             .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
+        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
             .Returns(Task.FromResult(IdentityResult.Failed()));
 
         var jwtService = Substitute.For<IJwtService>();

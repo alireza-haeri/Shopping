@@ -1,28 +1,28 @@
 ﻿services:
-  adly.api:
-    image: Shopping.api
+  shopping.api:
     build:
-      context: .
+      context: /
       dockerfile: Dockerfile
-    container_name: adly-api
+    image: shopping-api:latest 
+    container_name: shopping-api
     environment:
-      "ASPNETCORE_URLS": "http://+"
-      "ASPNETCORE_ENVIRONMENT": "Development"
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Development"
     ports:
       - "5000:80"
-  adly-sql: 
+  shopping-sql: 
     image: "mcr.microsoft.com/mssql/server:2022-latest"
-    container_name: adly_sql
+    container_name: shopping_sql
     ports: # not actually needed, because the two services are on the same network
       - "123:1433"
     environment:
       - ACCEPT_EULA=y
-      - SA_PASSWORD=AdlyDbPass@123
+      - SA_PASSWORD=shoppingDbPass@123
     volumes:
       - sql-data:/data
-  minio-adly:
+  minio-shopping:
     image: "minio/minio"
-    container_name: minio_adly
+    container_name: shopping_minio
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -33,9 +33,9 @@
       - minio-data:/data
     command: server /data --console-address ":9001"
   
-  adly-seq:
+  shopping-seq:
     image: datalust/seq:latest
-    container_name: adly_seq
+    container_name: shopping_seq
     restart: always
     ports:
       - "5341:80"

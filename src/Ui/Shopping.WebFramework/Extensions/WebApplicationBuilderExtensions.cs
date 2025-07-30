@@ -46,11 +46,10 @@ public static class WebApplicationBuilderExtensions
 
     public static WebApplicationBuilder ConfigureAuthenticationAndAuthorization(this WebApplicationBuilder builder)
     {
-        var signKey = builder.Configuration.GetSection("JwtConfiguration")["SignInKey"]!;
-        var encryptionKey = builder.Configuration.GetSection("JwtConfiguration")["EncryptionKey"]!;
-        var issuer = builder.Configuration.GetSection("JwtConfiguration")["Issuer"]!;
-        var audience = builder.Configuration.GetSection("JwtConfiguration")["Audience"]!;
-
+        var identityConfiguration = builder.Configuration
+            .GetSection("Identity")
+            .Get<AddIdentityServicesModel>()
+            ?? throw new ArgumentNullException(nameof(AddIdentityServicesModel));
 
         builder.Services.AddAuthorization();
 
@@ -67,15 +66,15 @@ public static class WebApplicationBuilderExtensions
                 RequireSignedTokens = true,
 
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signKey)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.JwtModel.SignInKey)),
 
                 ValidateIssuer = true,
-                ValidIssuer = issuer,
+                ValidIssuer = identityConfiguration.JwtModel.Issuer,
 
                 ValidateAudience = true,
-                ValidAudience = audience,
+                ValidAudience = identityConfiguration.JwtModel.Audience,
 
-                TokenDecryptionKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(encryptionKey))
+                TokenDecryptionKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.JwtModel.EncryptionKey))
             };
 
             options.TokenValidationParameters = validationParameters;
@@ -131,7 +130,7 @@ public static class WebApplicationBuilderExtensions
     public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
     {
         var identityConfiguration = builder.Configuration
-            .GetSection("IdentityConfiguration")
+            .GetSection("Identity")
             .Get<AddIdentityServicesModel>();
 
         if (identityConfiguration is null)
@@ -145,11 +144,11 @@ public static class WebApplicationBuilderExtensions
     public static WebApplicationBuilder AddFileStorageServices(this WebApplicationBuilder builder)
     {
         var fileStorageConfiguration = builder.Configuration
-            .GetSection("FileStorageConfiguration")
+            .GetSection("FileStorage")
             .Get<AddFileStorageServicesModel>();
 
         if (fileStorageConfiguration is null)
-            throw new ArgumentNullException(nameof(AddIdentityServicesModel));
+            throw new ArgumentNullException(nameof(AddFileStorageServicesModel));
 
         builder.Services.AddFileStorageServices(fileStorageConfiguration!);
 
@@ -159,7 +158,7 @@ public static class WebApplicationBuilderExtensions
     public static WebApplicationBuilder AddPersistenceDbContext(this WebApplicationBuilder builder)
     {
         var persistenceConfiguration = builder.Configuration
-            .GetSection("AddPersistenceDbContextModel")
+            .GetSection("DbContext")
             .Get<AddPersistenceDbContextModel>();
 
         if (persistenceConfiguration is null)

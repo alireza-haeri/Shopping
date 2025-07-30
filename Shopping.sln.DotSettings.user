@@ -1,4 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAccessTokenResponse_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F01b1edbbc52c4ebcafdae726f6c3d1d611918_003F37_003Fabba976e_003FAccessTokenResponse_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AAutoMapperConfigurationException_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F9a00b514f1a941dd9f060453de7f7c4043200_003Fb3_003F82a0bf71_003FAutoMapperConfigurationException_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ACancellationToken_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F2565b9d99fdde488bc7801b84387b2cc864959cfb63212e1ff576fc9c6bb7e_003FCancellationToken_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADockerContainer_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F5dba6ddf13e45b51b1ad38f31e6c64ab8a7dfb3341e66d1e2cd56293627ebbbd_003FDockerContainer_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
@@ -21,7 +22,7 @@
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98e58de2_002D6fcd_002D4c76_002D991f_002D00f092c3bb72/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98e58de2_002D6fcd_002D4c76_002D991f_002D00f092c3bb72/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
@@ -44,7 +45,7 @@
     &lt;TestId&gt;xUnit::0F31B557-4529-4EB1-B247-398F884DCFF4::net9.0::Shopping.Infrastructure.FileStorage.Minio.Test.MinioFileStorageTest.Create_Object_With_Valid_Object_Should_Be_Success&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afc6f980_002D5753_002D4dac_002Db03a_002D71bdf4cec4fb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afc6f980_002D5753_002D4dac_002Db03a_002D71bdf4cec4fb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Product_Details_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::13FA4503-4683-462D-8EDD-38E84FF898DB::net9.0::Shopping.Infrastructure.Persistence.Test.UnitOfWorkTests.Adding_New_Category_Should_Save_To_Db&lt;/TestId&gt;&#xD;

@@ -20,12 +20,12 @@ public sealed class ProductEntity : BaseEntity<Guid>
     public int Quantity { get; private set; }
     public ProductState State { get; set; }
     public Guid UserId { get; private set; }
-    public Guid CategoryId { get; private set; }
+    public Guid? CategoryId { get; private set; }
 
     #region NavigationProperties
 
     public UserEntity User { get; private set; }
-    public CategoryEntity Category { get; private set; }
+    public CategoryEntity? Category { get; private set; }
 
     #endregion
 
@@ -38,7 +38,6 @@ public sealed class ProductEntity : BaseEntity<Guid>
         Guard.Against.NullOrEmpty(title, message: "Invalid Title");
         Guard.Against.NullOrEmpty(id, message: "Invalid Id");
         Guard.Against.NullOrEmpty(userId, message: "Invalid User Id");
-        Guard.Against.NullOrEmpty(categoryId, message: "Invalid Category Id");
         Guard.Against.NegativeOrZero(price, message: "Invalid Price");
         Guard.Against.Negative(quantity, message: "Invalid Quantity");
 
@@ -51,7 +50,7 @@ public sealed class ProductEntity : BaseEntity<Guid>
             Quantity = quantity,
             State = state,
             UserId = userId.Value,
-            CategoryId = categoryId.Value
+            CategoryId = categoryId
         };
 
         product._changeLogs.Add(LogValueObject.Log("Product Created"));

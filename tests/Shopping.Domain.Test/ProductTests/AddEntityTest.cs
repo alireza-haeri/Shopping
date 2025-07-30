@@ -44,25 +44,6 @@ public class AddEntityTest
     }
 
     [Fact]
-    public void Creating_Ads_With_Null_Category_Should_Throw_ArgumentNullException()
-    {
-        //Arrange
-        var title = "Product Title";
-        var description = "Product Description";
-        var price = 4000;
-        var quantity = 1;
-        var state = ProductEntity.ProductState.Active;
-        Guid? userId = Guid.NewGuid();
-        Guid? categoryId = null;
-
-        //Act
-        Action act = () => ProductEntity.Create(title, description, price, quantity, state, userId, categoryId);
-
-        //Assert
-        act.Should().Throw<ArgumentException>();
-    }
-
-    [Fact]
     public void Creating_Ads_With_Empty_User_Should_Throw_ArgumentNullException()
     {
         //Arrange
@@ -80,25 +61,7 @@ public class AddEntityTest
         //Assert
         act.Should().Throw<ArgumentException>();
     }
-
-    [Fact]
-    public void Creating_Ads_With_Empty_Category_Should_Throw_ArgumentNullException()
-    {
-        //Arrange
-        var title = "Product Title";
-        var description = "Product Description";
-        var price = 4000;
-        var quantity = 1;
-        var state = ProductEntity.ProductState.Active;
-        Guid? userId = Guid.NewGuid();
-        Guid? categoryId = Guid.Empty;
-
-        //Act
-        Action act = () => ProductEntity.Create(title, description, price, quantity, state, userId, categoryId);
-
-        //Assert
-        act.Should().Throw<ArgumentException>();
-    }
+    
 
     [Fact]
     public void Creating_Ads_With_LessThan_Zero_Quantity_Should_Throw_ArgumentNullException()

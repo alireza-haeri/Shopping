@@ -9,8 +9,7 @@ public class ApiVersionDocumentProcessor:IDocumentProcessor
     public void Process(DocumentProcessorContext context)
     {
         var version = context.Document.Info.Version;
-
-
+        
         var pathsToRemove = context.Document.Paths
             .Where(pathItem => !RegExHelpers.MatchesApiVersion(version, pathItem.Key))
             .Select(c => c.Key)
@@ -18,7 +17,7 @@ public class ApiVersionDocumentProcessor:IDocumentProcessor
 
         foreach (var pathToRemove in pathsToRemove)
         {
-            context.Document.Paths.Remove(pathToRemove);
+            if (pathToRemove != null) context.Document.Paths.Remove(pathToRemove);
         }
     }
 }

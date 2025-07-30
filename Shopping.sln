@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{EBDF2F
 		Dockerfile = Dockerfile
 		.dockerignore = .dockerignore
 		docker\compose.yaml = docker\compose.yaml
+		docker\.env = docker\.env
+		docker\docker-compose.yml = docker\docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq", "seq", "{959072C0-EEFB-480C-82D4-F47E91E67307}"

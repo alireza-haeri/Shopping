@@ -42,13 +42,13 @@ public class EditProductCommandHandler(IUnitOfWork unitOfWork, IFileService file
             return OperationResult<bool>.DomainFailureResult(e.Message);
         }
 
-        if (request.RemovedImages != null)
+        if (request.RemovedImages?.Length != 0)
         {
             await fileService.RemoveFileAsync(request.RemovedImages, cancellationToken);
             product.RemoveImages(request.RemovedImages);
         }
 
-        if (request.AddedImages != null)
+        if (request.AddedImages?.Count != 0)
         {
             var savedFiles = await fileService.SaveFilesAsync(
                 request.AddedImages

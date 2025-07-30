@@ -31,9 +31,10 @@ internal class ProductRepository(ShoppingDbContext db) : BaseRepository<ProductE
         Guid? categoryId,
         CancellationToken cancellationToken)
     {
-        if (currentPage >= 0)
+        if (currentPage <= 0)
             currentPage = 0;
-        if (pageCount >= 0)
+        
+        if (pageCount <= 0)
             pageCount = 10;
 
         var products = TableNoTracking

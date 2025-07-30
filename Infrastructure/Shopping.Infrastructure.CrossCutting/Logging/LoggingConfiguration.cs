@@ -1,17 +1,22 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Serilog.Debugging;
 using Serilog.Enrichers.Span;
 using Serilog.Events;
 using Serilog.Exceptions;
 
 namespace Shopping.Infrastructure.CrossCutting.Logging;
 
-public class LoggingConfiguration
+public static class LoggingConfiguration
 {
     public static Action<HostBuilderContext, LoggerConfiguration> ConfigureLogger(SerilogConfiguration serilogConfiguration) =>
         (context, configuration) =>
         {
+            SelfLog.Enable(Console.Error);
+            
             var applicationName = context.HostingEnvironment.ApplicationName;
 
             configuration
@@ -24,7 +29,7 @@ public class LoggingConfiguration
             if (context.HostingEnvironment.IsDevelopment())
             {
                 configuration.WriteTo.Console().MinimumLevel.Information();
-                configuration.WriteTo.Seq(serilogConfiguration.ServerUrl, LogEventLevel.Information,
+                configuration.WriteTo.Seq(serilogConfiguration.ServerUrl,
                     apiKey: serilogConfiguration.ApiKey);
             }
             else if (context.HostingEnvironment.IsProduction())

@@ -1,16 +1,16 @@
-﻿services:
+services:
   shopping.api:
     build:
       context: .
       dockerfile: Dockerfile
-    image: shopping-api:latest 
+    image: shopping-api:latest
     container_name: shopping-api
     environment:
       ASPNETCORE_URLS: "http://+:80"
       ASPNETCORE_ENVIRONMENT: "Development"
     ports:
       - "5000:80"
-  shopping-sql: 
+  shopping-sql:
     image: "mcr.microsoft.com/mssql/server:2022-latest"
     container_name: shopping_sql
     ports: # not actually needed, because the two services are on the same network

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Shopping.Application.Extensions;
@@ -121,9 +122,10 @@ public static class WebApplicationBuilderExtensions
 
         if (loggingConfiguration is null)
             throw new ArgumentNullException(nameof(SerilogConfiguration));
-
+        
+        builder.Logging.ClearProviders();
         builder.Host.UseSerilog(LoggingConfiguration.ConfigureLogger(loggingConfiguration!));
-
+        builder.Logging.AddSerilog();
         return builder;
     }
 

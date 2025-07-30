@@ -16,9 +16,12 @@ public class CreateProductCommandHandler(IUnitOfWork unitOfWork, IFileService fi
     public async ValueTask<OperationResult<bool>> Handle(CreateProductCommand request,
         CancellationToken cancellationToken)
     {
-        var category = await unitOfWork.CategoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
-        if (category is null)
-            return OperationResult<bool>.FailureResult(nameof(CreateProductCommand.CategoryId), "Category not found");
+        if (request.CategoryId.HasValue)
+        {
+            var category = await unitOfWork.CategoryRepository.GetByIdAsync(request.CategoryId.Value, cancellationToken);
+            if (category is null)
+                return OperationResult<bool>.FailureResult(nameof(CreateProductCommand.CategoryId), "Category not found");
+        }
 
         var user = await userManager.FindByIdAsync(request.UserId, cancellationToken);
         if (user is null)
@@ -49,6 +52,7 @@ public class CreateProductCommandHandler(IUnitOfWork unitOfWork, IFileService fi
                 product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
         }
 
+        await unitOfWork.ProductRepository.CreateAsync(product, cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);
 
         return OperationResult<bool>.SuccessResult(true);

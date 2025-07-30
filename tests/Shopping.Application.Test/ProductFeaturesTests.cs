@@ -534,7 +534,7 @@ public class ProductFeaturesTests
         result.Result.Quantity.Should().Be(product.Quantity);
         result.Result.State.Should().Be(product.State);
         result.Result.CategoryTitle.Should().Be(product.Category.Title);
-        result.Result.CategoryId.Should().Be(product.CategoryId);
+        if (product.CategoryId != null) result.Result.CategoryId.Should().Be(product.CategoryId.Value);
         result.Result.OwnerId.Should().Be(product.UserId);
         result.Result.OwnerFirstName.Should().Be(product.User.FirstName);
         result.Result.OwnerLastName.Should().Be(product.User.LastName);

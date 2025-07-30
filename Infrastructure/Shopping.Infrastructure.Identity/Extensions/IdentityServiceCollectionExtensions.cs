@@ -46,7 +46,7 @@ public static class IdentityServiceCollectionExtensions
 
         services.Configure<JwtConfiguration>(config =>
         {
-            var jwtModel = model.jwtModel;
+            var jwtModel = model.JwtModel;
             
             config.SignInKey = jwtModel.SignInKey;
             config.Audience = jwtModel.Audience;
@@ -62,6 +62,6 @@ public static class IdentityServiceCollectionExtensions
     }
 }
 
-public record AddIdentityServicesModel(AddIdentityServicesJwtModel jwtModel);
+public record AddIdentityServicesModel(AddIdentityServicesJwtModel JwtModel);
 
 public record AddIdentityServicesJwtModel(string SignInKey,string EncryptionKey, string Audience, string Issuer, int ExpirationMinute);

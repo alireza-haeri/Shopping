@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shopping.Application.Contracts.User;
 using Shopping.Domain.Entities.User;
 
@@ -35,5 +36,10 @@ internal class UserManagerImplementations(UserManager<UserEntity> userManager,Si
             return IdentityResult.Success;
         
         return IdentityResult.Failed(new IdentityError(){Code = "InvalidPassword",Description = "Password is incorrect"});  
+    }
+
+    public async Task<bool> ExistsAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await userManager.Users.AnyAsync(u => userId.Equals(u.Id),cancellationToken);
     }
 }

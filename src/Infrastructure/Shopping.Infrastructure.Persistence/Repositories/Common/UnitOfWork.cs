@@ -1,4 +1,5 @@
-﻿using Shopping.Application.Repositories.Category;
+﻿using Shopping.Application.Repositories.Cart;
+using Shopping.Application.Repositories.Category;
 using Shopping.Application.Repositories.Common;
 using Shopping.Application.Repositories.Product;
 
@@ -8,7 +9,8 @@ public class UnitOfWork(ShoppingDbContext db) : IUnitOfWork
 {
     public ICategoryRepository CategoryRepository { get; } = new CategoryRepository(db);
     public IProductRepository ProductRepository { get; } = new ProductRepository(db);
-    
+    public ICartRepository CartRepository { get; }
+
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
         await db.SaveChangesAsync(cancellationToken);

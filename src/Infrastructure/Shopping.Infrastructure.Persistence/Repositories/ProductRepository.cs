@@ -27,6 +27,11 @@ internal class ProductRepository(ShoppingDbContext db) : BaseRepository<ProductE
             .FirstOrDefaultAsync(p => id.Equals(p.Id), cancellationToken);
     }
 
+    public async Task<ProductEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await TableNoTracking.FirstOrDefaultAsync(p => p.Id.Equals(id), cancellationToken);
+    }
+
     public async Task<List<ProductEntity>> GetProductsAsync(string title, int currentPage, int pageCount,
         Guid? categoryId,
         CancellationToken cancellationToken)

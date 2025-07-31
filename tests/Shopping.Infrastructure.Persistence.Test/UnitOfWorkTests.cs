@@ -17,22 +17,14 @@ namespace Shopping.Infrastructure.Persistence.Test
     /// Base class for persistence layer tests. Manages the database fixture
     /// and ensures test isolation by resetting the database and providing seeding helpers.
     /// </summary>
-    public abstract class PersistenceTestBase : IClassFixture<PersistenceTestSetup>, IAsyncLifetime
+    public abstract class PersistenceTestBase(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
+        : IClassFixture<PersistenceTestSetup>, IAsyncLifetime
     {
-        protected readonly ITestOutputHelper TestOutputHelper;
-        protected readonly UnitOfWork UnitOfWork;
-        private readonly ShoppingDbContext _dbContext;
-        protected readonly Faker Faker;
-        protected readonly ISender Sender;
-
-        protected PersistenceTestBase(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
-        {
-            TestOutputHelper = testOutputHelper;
-            UnitOfWork = setup.UnitOfWork;
-            _dbContext = setup.ShoppingDbContext;
-            Faker = new Faker("fa");
-            Sender = setup.ServiceProvider.GetRequiredService<ISender>();
-        }
+        protected readonly ITestOutputHelper TestOutputHelper = testOutputHelper;
+        protected readonly UnitOfWork UnitOfWork = setup.UnitOfWork;
+        private readonly ShoppingDbContext _dbContext = setup.ShoppingDbContext;
+        protected readonly Faker Faker = new("fa");
+        protected readonly ISender Sender = setup.ServiceProvider.GetRequiredService<ISender>();
 
         /// <summary>
         /// Resets the database to a clean state using correct table names with schemas.
@@ -65,11 +57,9 @@ namespace Shopping.Infrastructure.Persistence.Test
 
     public class PersistenceIntegrationTests
     {
-        public class CategoryRepositoryTests : PersistenceTestBase
+        public class CategoryRepositoryTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
+            : PersistenceTestBase(setup, testOutputHelper)
         {
-            public CategoryRepositoryTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
-                : base(setup, testOutputHelper) { }
-
             [Fact]
             public async Task CreateAsync_ShouldAddCategoryToDatabase()
             {
@@ -82,11 +72,9 @@ namespace Shopping.Infrastructure.Persistence.Test
             }
         }
 
-        public class ProductRepositoryTests : PersistenceTestBase
+        public class ProductRepositoryTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
+            : PersistenceTestBase(setup, testOutputHelper)
         {
-            public ProductRepositoryTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
-                : base(setup, testOutputHelper) { }
-            
             [Fact]
             public async Task GetDetailsByIdAsync_ShouldLoadRelatedEntitiesCorrectly()
             {
@@ -133,11 +121,9 @@ namespace Shopping.Infrastructure.Persistence.Test
             }
         }
         
-        public class MediatorWithPersistenceTests : PersistenceTestBase
+        public class MediatorWithPersistenceTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
+            : PersistenceTestBase(setup, testOutputHelper)
         {
-            public MediatorWithPersistenceTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
-                : base(setup, testOutputHelper) { }
-
             [Fact]
             public async Task CreateCategoryCommand_ShouldPersistData_And_BeRetrievable()
             {

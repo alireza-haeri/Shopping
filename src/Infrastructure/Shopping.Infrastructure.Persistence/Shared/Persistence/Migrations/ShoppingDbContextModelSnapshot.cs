@@ -57,7 +57,7 @@ namespace Shopping.Infrastructure.Persistence.Shared.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
@@ -381,9 +381,7 @@ namespace Shopping.Infrastructure.Persistence.Shared.Persistence.Migrations
                 {
                     b.HasOne("Shopping.Domain.Entities.Product.CategoryEntity", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("Shopping.Domain.Entities.User.UserEntity", "User")
                         .WithMany("Products")

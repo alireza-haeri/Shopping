@@ -31,22 +31,33 @@ internal class ProductRepository(ShoppingDbContext db) : BaseRepository<ProductE
         Guid? categoryId,
         CancellationToken cancellationToken)
     {
-        if (currentPage >= 0)
-            currentPage = 0;
-        if (pageCount >= 0)
-            pageCount = 10;
+        IQueryable<ProductEntity> productsQuery = TableNoTracking;
 
-        var products = TableNoTracking
-            .Where(p => title.Contains(p.Title))
-            .Skip((currentPage - 1) * pageCount)
-            .Take(pageCount);
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            productsQuery = productsQuery.Where(p => p.Title.Contains(title));
+        }
 
         if (categoryId.HasValue)
-            products = products.Where(p => p.CategoryId == categoryId.Value);
+        {
+            productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+        }
+    
+        productsQuery = productsQuery.OrderByDescending(p => p.CreatedDate);
 
-        return await products.ToListAsync(cancellationToken);
+        if (currentPage <= 0)
+            currentPage = 1;
+    
+        if (pageCount <= 0)
+            pageCount = 10;
+        
+        var result = await productsQuery
+            .Skip((currentPage - 1) * pageCount)
+            .Take(pageCount)
+            .ToListAsync(cancellationToken);
+
+        return result;
     }
-
     public async Task DeleteAsync(ProductEntity product, CancellationToken cancellationToken)
     {
         await base.DeleteAsync(p=>product.Id.Equals(p.Id), cancellationToken);

@@ -18,16 +18,11 @@ public sealed class CategoryEntity : BaseEntity<Guid>
     public Guid? ParentId { get; private set; }
     public IReadOnlyList<ProductEntity> Products => _products.AsReadOnly();
 
-    public void Edit(string title, Guid? parentId = null)
+    public void Edit(string title, Guid? parentId)
     {
         Guard.Against.NullOrEmpty(title, nameof(title));
-        
-        Title = title;
 
-        if (ParentId.HasValue)
-        {
-            Guard.Against.NullOrEmpty(parentId);
-            ParentId = parentId;
-        }
+        Title = title;
+        ParentId = parentId;
     }
 }

@@ -1,0 +1,51 @@
+﻿services:
+  shopping.api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shopping-api:latest 
+    container_name: shopping-api
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    ports:
+      - "5000:80"
+  shopping-sql: 
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: shopping_sql
+    ports: # not actually needed, because the two services are on the same network
+      - "123:1433"
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=shoppingDbPass@123
+    volumes:
+      - sql-data:/data
+  minio-shopping:
+    image: "minio/minio"
+    container_name: shopping_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: miniouser
+      MINIO_ROOT_PASSWORD: MinioDemo@123
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+  
+  shopping-seq:
+    image: datalust/seq:latest
+    container_name: shopping_seq
+    restart: always
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=AdminPass123  # Optional: Secure admin access on first run
+    volumes:
+      - seq-data:/data
+volumes:
+  seq-data:
+  minio-data:
+  sql-data:
+     

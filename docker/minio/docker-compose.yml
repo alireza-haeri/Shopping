@@ -11,7 +11,6 @@
       - MINIO_ROOT_USER=shoppingadmin
       - MINIO_ROOT_PASSWORD=shopping12345
     command: server /data --console-address ":9001"
-    restart: always
     networks:
       - shopping-net
 

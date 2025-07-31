@@ -23,6 +23,7 @@ public static class FileStorageServiceCollectionExtensions
         services.Configure<MinioConfiguration>(config =>
         {
             config.ExpiryFileUrlMinute = model.ExpiryFileUrlMinute;
+            config.BucketName = model.BucketName;
         });
 
         return services;
@@ -34,4 +35,5 @@ public record AddFileStorageServicesModel(
     string SecretKey,
     string Endpoint,
     bool UseSsl,
-    int ExpiryFileUrlMinute);
+    int ExpiryFileUrlMinute,
+    string? BucketName = null);

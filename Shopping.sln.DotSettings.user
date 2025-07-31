@@ -5,57 +5,30 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ADockerContainer_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F5dba6ddf13e45b51b1ad38f31e6c64ab8a7dfb3341e66d1e2cd56293627ebbbd_003FDockerContainer_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AFaker_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Ffa1b9edb9d1aac8b89bc7e4a98909b8fbaf453307232579675b9ffab91e23c9f_003FFaker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AGuardAgainstNegativeExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F9d2c589c1992461bdff48d258cb0ea2fe4cb57c72032f2c7928a96f9a9fcfc4_003FGuardAgainstNegativeExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AGuardAgainstNullExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F38ecee13a94d6931eebbdb2c563d2c5375424fe8f4eae3963ab5cef6526cb_003FGuardAgainstNullExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIClassFixture_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fae7664a35557e6da52239284f9951659c394efee9e9d3754a7747669271fb12_003FIClassFixture_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AIGlobalConfiguration_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3ac473df69ae4ed5bc93c60d4af4617447400_003F02_003F71a910f2_003FIGlobalConfiguration_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AImages_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Ff3d878a8d3613cbe7ff8eed52993d0b15c17354a2128ca9d26881243fe95c5_003FImages_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ALateBoundTestFramework_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F22647a7960d2619ab733924a2acfee09d32a8827c8c680a37cc4863678abec_003FLateBoundTestFramework_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AList_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F1b81cb3be224213a6a73519b6e340a628d9a1fb8629c351a186a26f6376669_003FList_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMapperConfigurationExpression_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F9a00b514f1a941dd9f060453de7f7c4043200_003F88_003F14eba3a7_003FMapperConfigurationExpression_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AMinioClientExtensions_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fdabd1d1eda4cee59987a6d63e2a12c8499e2a7db2a8b882ad5838f5f18e939_003FMinioClientExtensions_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ARuntimeType_002ECoreCLR_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fad1d58b8dd22123dfae3f2cf5d8b199992465c9c344d032f93a826d8e5539ff_003FRuntimeType_002ECoreCLR_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATestInvoker_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003Fce7aac7c8eef8118596b4ecf51a89219c1850a88d1d3d4ac5d4949c4c7f4a87_003FTestInvoker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AThreadLocalContext_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F402b2077f38742cb9b381ab9e79e493229c00_003F55_003Fc39b3289_003FThreadLocalContext_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATypeMapConfiguration_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3ac473df69ae4ed5bc93c60d4af4617447400_003F15_003F3874d8a9_003FTypeMapConfiguration_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
-	
-	
-	
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=79b1ad0c_002D63c5_002D4b0b_002Db908_002D78945abc020e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Create_Product_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=98e58de2_002D6fcd_002D4c76_002D991f_002D00f092c3bb72/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AValidationResult_002Ecs_002Fl_003AC_0021_003FUsers_003FAliRezaHM_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E1_003Fresharper_002Dhost_003FSourcesCache_003F1ea0722f8c9bbaab3e5d465d364dd217a3f22b5bc092643f8263eedcc1f68_003FValidationResult_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">C:\Users\AliRezaHM\AppData\Local\JetBrains\Rider2025.1\resharper-host\temp\Rider\vAny\CoverageData\_Shopping.-156869453\Snapshot\snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ef69e520_002D64e8_002D44a6_002D9ba1_002D90b946801b23/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Solution /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9eb4a2c5_002D1ab4_002D42cf_002D93c2_002D8d45d6cc1892/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AddEntityTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.ProductTests.AddEntityTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.UserTests.UserEntityTest.Should_Add_Product_To_User&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.UserTests.UserEntityTest.Add_Product_To_User_Should_Have_1_Count&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF::net9.0::Shoping.Domain.Test.UserTests.UserEntityTest&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests.Creating_New_User_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests.User_Register_Email_Should_Be_Valid&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests.User_Register_Password_And_RepeatPassword_Should_Be_Same&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests.Login_User_With_UserName_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests.Login_User_With_UserName_And_Wrong_Password_Should_Be_Failure&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.UserFeatureTests&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests.Add_Category_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests.Get_All_Categories_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests.Get_Category_By_Id_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests.Get_Category_By_Id_Should_Be_NotFound&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.CategoryFeatureTests&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0F31B557-4529-4EB1-B247-398F884DCFF4::net9.0::Shopping.Infrastructure.FileStorage.Minio.Test.MinioFileStorageTest.Create_Object_With_Valid_Object_Should_Be_Success&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=afc6f980_002D5753_002D4dac_002Db03a_002D71bdf4cec4fb/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Getting_Product_Details_With_Valid_Parameters_Should_Be_Success" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;xUnit::E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78::net9.0::Shopping.Application.Test.ProductFeaturesTests.Getting_Product_Details_With_Valid_Parameters_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::13FA4503-4683-462D-8EDD-38E84FF898DB::net9.0::Shopping.Infrastructure.Persistence.Test.UnitOfWorkTests.Adding_New_Category_Should_Save_To_Db&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::13FA4503-4683-462D-8EDD-38E84FF898DB::net9.0::Shopping.Infrastructure.Persistence.Test.UnitOfWorkTests&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Register_User_Should_be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Getting_Access_Token_Should_be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::DE4CD50E-6483-40B1-AE55-0BC6584175C1::net9.0::Shopping.Infrastructure.Identity.Test.IdentityTests.Jwe_Token_Should_Have_Claims&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0F31B557-4529-4EB1-B247-398F884DCFF4::net9.0::Shopping.Infrastructure.FileStorage.Minio.Test.MinioFileStorageTest.Create_Object_With_Valid_Object_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0F31B557-4529-4EB1-B247-398F884DCFF4::net9.0::Shopping.Infrastructure.FileStorage.Minio.Test.MinioFileStorageTest.Getting_Images_Should_Be_Success&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;xUnit::0F31B557-4529-4EB1-B247-398F884DCFF4::net9.0::Shopping.Infrastructure.FileStorage.Minio.Test.MinioFileStorageTest.Removing_Image_Should_Be_Success&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	</wpf:ResourceDictionary>

@@ -13,15 +13,15 @@ namespace Shopping.Infrastructure.CrossCutting.FileStorageService.Implementation
 internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfiguration> configuration) : IFileService
 {
     private readonly MinioConfiguration _minioConfiguration = configuration.Value;
-    private const string ShoppingBucketName = "shopping.files";
+    private readonly string _shoppingBucketName = configuration.Value.BucketName ?? "shopping.files";
 
     private async Task CreateBucketIfMissingAsync(CancellationToken cancellationToken = default)
     {
-        var checkBucketExistArg = new BucketExistsArgs().WithBucket(ShoppingBucketName);
+        var checkBucketExistArg = new BucketExistsArgs().WithBucket(_shoppingBucketName);
         if (await minioClient.BucketExistsAsync(checkBucketExistArg, cancellationToken))
             return;
 
-        var createBucketArg = new MakeBucketArgs().WithBucket(ShoppingBucketName);
+        var createBucketArg = new MakeBucketArgs().WithBucket(_shoppingBucketName);
         await minioClient.MakeBucketAsync(createBucketArg, cancellationToken);
     }
 
@@ -41,7 +41,7 @@ internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfig
             memoryStream.Position = 0;
             
             var createFileArg = new PutObjectArgs()
-                .WithBucket(ShoppingBucketName)
+                .WithBucket(_shoppingBucketName)
                 .WithStreamData(memoryStream)
                 .WithObjectSize(memoryStream.Length)
                 .WithObject(fileName)
@@ -65,7 +65,7 @@ internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfig
         foreach (var fileName in fileNames)
         {
             var objectInfo = new StatObjectArgs()
-                .WithBucket(ShoppingBucketName)
+                .WithBucket(_shoppingBucketName)
                 .WithObject(fileName);
 
             ObjectStat objectInfoResult;
@@ -80,7 +80,7 @@ internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfig
             }
 
             var sasUrlArgs = new PresignedGetObjectArgs()
-                .WithBucket(ShoppingBucketName)
+                .WithBucket(_shoppingBucketName)
                 .WithObject(fileName)
                 .WithExpiry((int)TimeSpan.FromMinutes(_minioConfiguration.ExpiryFileUrlMinute).TotalSeconds);
 
@@ -101,7 +101,7 @@ internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfig
         foreach (var fileName in fileNames)
         {
             var objectInfo = new StatObjectArgs()
-                .WithBucket(ShoppingBucketName)
+                .WithBucket(_shoppingBucketName)
                 .WithObject(fileName);
 
             var objectInfoResult = await minioClient.StatObjectAsync(objectInfo, cancellationToken);
@@ -112,7 +112,7 @@ internal class MinioStorageService(IMinioClient minioClient,IOptions<MinioConfig
         }
 
         var removeObjectArg = new RemoveObjectsArgs()
-            .WithBucket(ShoppingBucketName)
+            .WithBucket(_shoppingBucketName)
             .WithObjects(fileNames);
         
         await minioClient.RemoveObjectsAsync(removeObjectArg, cancellationToken);

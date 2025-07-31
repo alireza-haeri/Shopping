@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shopping.Application.Extensions;
-using Shopping.Infrastructure.Persistence.Extensions;
+using Shopping.Application.Repositories.Common;
 using Shopping.Infrastructure.Persistence.Repositories.Common;
 using Testcontainers.MsSql;
 
@@ -10,46 +10,40 @@ namespace Shopping.Infrastructure.Persistence.Test;
 public class PersistenceTestSetup : IAsyncLifetime
 {
     public UnitOfWork UnitOfWork { get; private set; } = null!;
-    private readonly MsSqlContainer _msSqlConfiguration = new MsSqlBuilder()
-        .WithImage("mcr.microsoft.com/mssql/server:2019-latest") 
-        .Build();
-
+    public ShoppingDbContext ShoppingDbContext { get; private set; } = null!;
     public IServiceProvider ServiceProvider { get; private set; } = null!;
+
+    private readonly MsSqlContainer _msSqlContainer = new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
+        //.WithDatabase("ShoppingTestDb")
+        .Build();
 
     public async Task InitializeAsync()
     {
-        try
-        {
-            await _msSqlConfiguration.StartAsync();
-        }
-        catch (Exception e)
-        {
-            var logs = await _msSqlConfiguration.GetLogsAsync();
-            Console.WriteLine($"Container Logs: {logs}");
-        }
+        await _msSqlContainer.StartAsync();
 
-        var dbContextOptionsBuilder = new DbContextOptionsBuilder<ShoppingDbContext>()
-            .UseSqlServer(_msSqlConfiguration.GetConnectionString());
+        var connectionString = _msSqlContainer.GetConnectionString();
+        var dbContextOptions = new DbContextOptionsBuilder<ShoppingDbContext>()
+            .UseSqlServer(connectionString).Options;
 
-        var dbContext = new ShoppingDbContext(dbContextOptionsBuilder.Options);
+        ShoppingDbContext = new ShoppingDbContext(dbContextOptions);
+        await ShoppingDbContext.Database.MigrateAsync();
+        UnitOfWork = new UnitOfWork(ShoppingDbContext);
 
-        await dbContext.Database.MigrateAsync();
+        var services = new ServiceCollection();
+        // ثبت سرویس‌های مورد نیاز برای MediatR و سایر وابستگی‌ها
+        services.AddApplicationAutoMapper();
+        services.AddApplicationMediatorServices();
+        services.RegisterApplicationValidator();
+        // ثبت DbContext به صورت Singleton برای طول عمر تست
+        services.AddSingleton(ShoppingDbContext);
+        services.AddSingleton<IUnitOfWork>(UnitOfWork);
 
-        UnitOfWork = new UnitOfWork(dbContext);
-
-        var serviceCollection = new ServiceCollection();
-        serviceCollection
-            .AddApplicationAutoMapper()
-            .AddApplicationMediatorServices()
-            .RegisterApplicationValidator()
-            .AddPersistenceDbContext(new AddPersistenceDbContextModel(_msSqlConfiguration.GetConnectionString()));
-        
-        ServiceProvider = serviceCollection.BuildServiceProvider(false);
+        ServiceProvider = services.BuildServiceProvider();
     }
 
     public async Task DisposeAsync()
     {
-        await _msSqlConfiguration.StopAsync();
-        await UnitOfWork.DisposeAsync(); 
+        await _msSqlContainer.StopAsync();
     }
 }

@@ -20,742 +20,366 @@ using Xunit.Abstractions;
 
 namespace Shopping.Application.Test;
 
-public class ProductFeaturesTests
+/// <summary>
+/// Base class for Product feature tests to handle common setup and mocking.
+/// </summary>
+public abstract class ProductFeaturesTestBase
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-    private readonly IServiceProvider _serviceProvider;
+    protected readonly ITestOutputHelper TestOutputHelper;
+    protected readonly IServiceProvider ServiceProvider;
+    protected readonly IUnitOfWork UnitOfWorkMock;
+    protected readonly IProductRepository ProductRepositoryMock;
+    protected readonly ICategoryRepository CategoryRepositoryMock;
+    protected readonly IUserManager UserManagerMock;
+    protected readonly IFileService FileServiceMock;
+    protected readonly IMapper Mapper;
+    protected readonly Faker Faker;
 
-    public ProductFeaturesTests(ITestOutputHelper testOutputHelper)
+    protected ProductFeaturesTestBase(ITestOutputHelper testOutputHelper)
     {
-        _testOutputHelper = testOutputHelper;
+        TestOutputHelper = testOutputHelper;
+        Faker = new Faker();
 
+        // Configure services and build the service provider for validators and AutoMapper
         var serviceCollection = new ServiceCollection();
         serviceCollection
             .RegisterApplicationValidator()
             .AddApplicationAutoMapper();
+        ServiceProvider = serviceCollection.BuildServiceProvider();
+        Mapper = ServiceProvider.GetRequiredService<IMapper>();
 
-        _serviceProvider = serviceCollection.BuildServiceProvider();
+        // Setup mock objects for dependencies
+        UnitOfWorkMock = Substitute.For<IUnitOfWork>();
+        ProductRepositoryMock = Substitute.For<IProductRepository>();
+        CategoryRepositoryMock = Substitute.For<ICategoryRepository>();
+        UserManagerMock = Substitute.For<IUserManager>();
+        FileServiceMock = Substitute.For<IFileService>();
+
+        // Link repositories to the Unit of Work mock
+        UnitOfWorkMock.ProductRepository.Returns(ProductRepositoryMock);
+        UnitOfWorkMock.CategoryRepository.Returns(CategoryRepositoryMock);
     }
+}
 
-    [Fact]
-    public async Task Create_Product_With_Valid_Parameters_Should_Be_Success()
+public class ProductFeaturesTests
+{
+    public class CreateProductTests : ProductFeaturesTestBase
     {
-        //Arrange
-        var faker = new Faker();
-        var command = new CreateProductCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            2000,
-            2,
-            ProductEntity.ProductState.Active,
-            [new CreateProductCommand.CreateProductImagesModel("Test", "image/png")]);
+        public CreateProductTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
 
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var userManagerMock = Substitute.For<IUserManager>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.CreateAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>())!
-            .Returns(Task.FromResult(new CategoryEntity("category")));
-        userManagerMock.FindByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(
-                new UserEntity(faker.Person.FirstName, faker.Person.LastName, faker.Person.UserName,
-                    faker.Person.Email)));
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>()));
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        //Act
-        var handler = new CreateProductCommandHandler(unitOfWorkMuck, fileServiceMock, userManagerMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Create_Product_With_Not_Valid_UserID_Should_Be_Failer()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new CreateProductCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            2000,
-            2,
-            ProductEntity.ProductState.Active,
-            [new CreateProductCommand.CreateProductImagesModel("Test", "image/png")]);
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var userManagerMock = Substitute.For<IUserManager>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.CreateAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>())!
-            .Returns(Task.FromResult(new CategoryEntity("category")));
-        userManagerMock.FindByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<UserEntity>(null!));
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>()));
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        //Act
-        var handler = new CreateProductCommandHandler(unitOfWorkMuck, fileServiceMock, userManagerMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeFalse();
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Create_Product_With_Not_Valid_CategoryId_Should_Be_Failer()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new CreateProductCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            2000,
-            2,
-            ProductEntity.ProductState.Active,
-            [new CreateProductCommand.CreateProductImagesModel("Test", "image/png")]);
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var userManagerMock = Substitute.For<IUserManager>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.CreateAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>())!
-            .Returns(Task.FromResult<CategoryEntity>(null!));
-        userManagerMock.FindByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<UserEntity>(null!));
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>()));
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        //Act
-        var handler = new CreateProductCommandHandler(unitOfWorkMuck, fileServiceMock, userManagerMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeFalse();
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Create_Product_With_Null_Images_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new CreateProductCommand(
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            2000,
-            2,
-            ProductEntity.ProductState.Active,
-            null);
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var userManagerMock = Substitute.For<IUserManager>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.CreateAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>())!
-            .Returns(Task.FromResult(new CategoryEntity("category")));
-        userManagerMock.FindByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(
-                new UserEntity(faker.Person.FirstName, faker.Person.LastName, faker.Person.UserName,
-                    faker.Person.Email)));
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>()));
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        //Act
-        var handler = new CreateProductCommandHandler(unitOfWorkMuck, fileServiceMock, userManagerMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Update_Product_With_Valid_Parameters_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new EditProductCommand(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            2,
-            ProductEntity.ProductState.Hidden,
-            Guid.NewGuid(),
-            ["i2"],
-            [new EditProductCommand.AddedImagesContent("i3", "image/png")]);
-
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            Guid.NewGuid(),
-            Guid.NewGuid());
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(category));
-
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>()
-                { new("i1", "image/png"), new SaveFileResultModel("i2", "image/png") }));
-
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        var handler = new EditProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        product.Title.Should().Be(command.Title);
-        product.Description.Should().Be(command.Description);
-        product.CategoryId.Should().Be(command.CategoryId!.Value);
-        product.State.Should().Be(command.State);
-        product.Price.Should().Be(command.Price);
-        product.Quantity.Should().Be(2);
-        product.Images.Should().HaveCount(2);
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Update_Product_With_Not_Valid_Category_Should_Be_Failer()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new EditProductCommand(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            2,
-            ProductEntity.ProductState.Hidden,
-            Guid.NewGuid(),
-            ["i1"],
-            [new EditProductCommand.AddedImagesContent("i3", "image/png")]);
-
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            Guid.NewGuid(),
-            Guid.NewGuid());
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<CategoryEntity?>(null));
-
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(new List<SaveFileResultModel>() { new("i1", "image/png") }));
-
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        var handler = new EditProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeFalse();
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Update_Product_With_Null_Removed_Image_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new EditProductCommand(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            2,
-            ProductEntity.ProductState.Hidden,
-            Guid.NewGuid(),
-            null,
-            [new EditProductCommand.AddedImagesContent("i3", "image/png")]);
-
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            Guid.NewGuid(),
-            Guid.NewGuid());
-
-        var images = new List<SaveFileResultModel>() { new("i1", "image/png") };
-
-        images.ForEach(i => product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
-
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<CategoryEntity?>(category));
-
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(product.Images.Select(i => new SaveFileResultModel(i.FileName, i.ImageType))
-                .ToList()));
-
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        var handler = new EditProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        product.Title.Should().Be(command.Title);
-        product.Description.Should().Be(command.Description);
-        product.CategoryId.Should().Be(command.CategoryId!.Value);
-        product.State.Should().Be(command.State);
-        product.Price.Should().Be(command.Price);
-        product.Quantity.Should().Be(2);
-        product.Images.Should().HaveCount(2);
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Update_Product_With_Null_Added_Image_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new EditProductCommand(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            2,
-            ProductEntity.ProductState.Hidden,
-            Guid.NewGuid(),
-            null,
-            null);
-
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            Guid.NewGuid(),
-            Guid.NewGuid());
-
-        var images = new List<SaveFileResultModel>() { new("i1", "image/png") };
-
-        images.ForEach(i => product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
-
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<CategoryEntity?>(category));
-
-        fileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
-            .Returns(Task.FromResult(product.Images.Select(i => new SaveFileResultModel(i.FileName, i.ImageType))
-                .ToList()));
-
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-
-        var handler = new EditProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        product.Title.Should().Be(command.Title);
-        product.Description.Should().Be(command.Description);
-        product.CategoryId.Should().Be(command.CategoryId!.Value);
-        product.State.Should().Be(command.State);
-        product.Price.Should().Be(command.Price);
-        product.Quantity.Should().Be(2);
-        product.Images.Should().HaveCount(1);
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Getting_Product_Details_With_Valid_Parameters_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var query = new GetProductDetailByIdQuery(Guid.NewGuid());
-
-
-        var userMock = new UserEntity(faker.Person.FirstName, faker.Person.LastName, faker.Person.UserName,
-            faker.Person.Email)
+        [Fact]
+        public async Task Handle_WithValidParameters_ShouldReturnSuccess()
         {
-            PhoneNumber = "09921768367"
-        };
+            // Arrange
+            var command = new CreateProductCommand(
+                Guid.NewGuid(), Guid.NewGuid(), Faker.Commerce.ProductName(), Faker.Lorem.Sentence(),
+                100, 5, ProductEntity.ProductState.Active,
+                [new CreateProductCommand.CreateProductImagesModel("base64", "image/png")]);
 
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
+            CategoryRepositoryMock.GetByIdAsync(command.CategoryId!.Value)!
+                .Returns(new CategoryEntity("Electronics"));
+            UserManagerMock.FindByIdAsync(command.UserId, CancellationToken.None)!
+                .Returns(new UserEntity(Faker.Name.FirstName(), Faker.Name.LastName(), Faker.Internet.UserName(), Faker.Internet.Email()));
+            FileServiceMock.SaveFilesAsync(Arg.Any<List<SaveFileModel>>(), CancellationToken.None)
+                .Returns(new List<SaveFileResultModel> { new("filename.png", "image/png") });
 
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            userMock,
-            category);
+            var handler = new CreateProductCommandHandler(UnitOfWorkMock, FileServiceMock, UserManagerMock);
 
-        var images = new List<SaveFileResultModel>() { new("i1", "image/png") };
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
 
-        images.ForEach(i => product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetDetailsByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<CategoryEntity?>(category));
-
-        fileServiceMock.GetFilesByNameAsync(Arg.Any<List<string>>(), CancellationToken.None)
-            .Returns(Task.FromResult(images.Select(i => new GetFileModel(i.FileName, i.FileType, i.FileName))
-                .ToList()));
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-        var mapper = _serviceProvider.GetRequiredService<IMapper>();
-        var handler = new GetProductDetailByIdQueryHandler(unitOfWorkMuck, fileServiceMock, mapper);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
-
-        //Assertion
-        result.IsSuccess.Should().Be(true);
-
-        result.Result!.ProductId.Should().Be(product.Id);
-        result.Result!.Title.Should().Be(product.Title);
-        result.Result.Description.Should().Be(product.Description);
-        result.Result.Price.Should().Be(product.Price);
-        result.Result.Quantity.Should().Be(product.Quantity);
-        result.Result.State.Should().Be(product.State);
-        result.Result.CategoryTitle.Should().Be(product.Category.Title);
-        if (product.CategoryId != null) result.Result.CategoryId.Should().Be(product.CategoryId.Value);
-        result.Result.OwnerId.Should().Be(product.UserId);
-        result.Result.OwnerFirstName.Should().Be(product.User.FirstName);
-        result.Result.OwnerLastName.Should().Be(product.User.LastName);
-        result.Result.OwnerPhone.Should().Be(product.User.PhoneNumber);
-        result.Result.OwnerEmail.Should().Be(product.User.Email);
-        result.Result.OwnerUserName.Should().Be(product.User.UserName);
-        result.Result.ProductImages.Should().HaveCount(images.Count);
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-
-    [Fact]
-    public async Task Getting_Products_With_Valid_Parameters_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var query = new GetProductsQuery(faker.Lorem.Sentence(3), 1, 3, Guid.NewGuid());
-
-        var category = new CategoryEntity(faker.Lorem.Sentence(2));
-        var images = new List<SaveFileResultModel>() { new("i1", "image/png") };
-
-        List<ProductEntity> products =
-        [
-            ProductEntity.Create(
-                Guid.NewGuid(),
-                faker.Lorem.Sentence(2),
-                faker.Lorem.Sentence(5),
-                decimal.Parse(faker.Commerce.Price()),
-                3,
-                ProductEntity.ProductState.Active,
-                Guid.NewGuid(),
-                Guid.NewGuid()),
-            ProductEntity.Create(
-                Guid.NewGuid(),
-                faker.Lorem.Sentence(2),
-                faker.Lorem.Sentence(5),
-                decimal.Parse(faker.Commerce.Price()),
-                3,
-                ProductEntity.ProductState.Active,
-                Guid.NewGuid(),
-                Guid.NewGuid()),
-        ];
-
-
-        foreach (var product in products)
-        {
-            images.ForEach(i => product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().BeTrue();
+            await UnitOfWorkMock.Received(1).CommitAsync(CancellationToken.None);
+            TestOutputHelper.WriteLineOperationResultErrors(result);
         }
 
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetProductsAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<Guid>(),
-                CancellationToken.None)!
-            .Returns(Task.FromResult(products));
-
-        categoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult<CategoryEntity?>(category));
-
-        fileServiceMock.GetFilesByNameAsync(Arg.Any<List<string>>(), CancellationToken.None)
-            .Returns(Task.FromResult(images.Select(i => new GetFileModel(i.FileName, i.FileType, i.FileName))
-                .ToList()));
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-        var handler = new GetProductsQueryHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
-
-        //Assertion
-        result.IsSuccess.Should().Be(true);
-
-        result.Result.Should().AllSatisfy(p =>
+        [Fact]
+        public async Task Handle_WhenCategoryIsNotFound_ShouldReturnFailureResult()
         {
-            p.Title.Should().NotBeNullOrEmpty();
-            p.Price.Should().BeGreaterThan(0);
-            p.Quantity.Should().BeGreaterThan(0);
-            p.ProductImage.Should().NotBeNull();
-        });
+            // Arrange
+            var command = new CreateProductCommand(
+                Guid.NewGuid(), Guid.NewGuid(), "Test", "Test", 100, 1, ProductEntity.ProductState.Active, null);
 
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
+            CategoryRepositoryMock.GetByIdAsync(command.CategoryId!.Value)!
+                .Returns(Task.FromResult<CategoryEntity?>(null));
+            UserManagerMock.FindByIdAsync(command.UserId, CancellationToken.None)!
+                .Returns(new UserEntity("f", "l", "u", "e"));
 
-    [Fact]
-    public async Task Getting_Products_With_Null_CategoryId_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var query = new GetProductsQuery(faker.Lorem.Sentence(3), 1, 3);
+            var handler = new CreateProductCommandHandler(UnitOfWorkMock, FileServiceMock, UserManagerMock);
 
-        var images = new List<SaveFileResultModel>() { new("i1", "image/png") };
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
 
-        List<ProductEntity> products =
-        [
-            ProductEntity.Create(
-                Guid.NewGuid(),
-                faker.Lorem.Sentence(2),
-                faker.Lorem.Sentence(5),
-                decimal.Parse(faker.Commerce.Price()),
-                3,
-                ProductEntity.ProductState.Active,
-                Guid.NewGuid(),
-                Guid.NewGuid()),
-            ProductEntity.Create(
-                Guid.NewGuid(),
-                faker.Lorem.Sentence(2),
-                faker.Lorem.Sentence(5),
-                decimal.Parse(faker.Commerce.Price()),
-                3,
-                ProductEntity.ProductState.Active,
-                Guid.NewGuid(),
-                Guid.NewGuid()),
-        ];
-
-
-        foreach (var product in products)
-        {
-            images.ForEach(i => product.AddImage(new ImageValueObject(i.FileName, i.FileType, string.Empty)));
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Value == "Category not found");
+            TestOutputHelper.WriteLineOperationResultErrors(result);
         }
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetProductsAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<Guid?>(),
-                CancellationToken.None)!
-            .Returns(Task.FromResult(products));
-
-        fileServiceMock.GetFilesByNameAsync(Arg.Any<List<string>>(), CancellationToken.None)
-            .Returns(Task.FromResult(images.Select(i => new GetFileModel(i.FileName, i.FileType, i.FileName))
-                .ToList()));
-
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-        unitOfWorkMuck.CategoryRepository.Returns(categoryRepositoryMock);
-        var handler = new GetProductsQueryHandler(unitOfWorkMuck, fileServiceMock);
-
-        //Act
-        var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
-
-        //Assertion
-        result.IsSuccess.Should().Be(true);
-
-        result.Result.Should().AllSatisfy(p =>
-        {
-            p.Title.Should().NotBeNullOrEmpty();
-            p.Price.Should().BeGreaterThan(0);
-            p.Quantity.Should().BeGreaterThan(0);
-            p.ProductImage.Should().NotBeNull();
-        });
-
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-    
-    [Fact]
-    public async Task Delete_Product_With_Valid_Parameters_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new DeleteProductCommand(Guid.NewGuid());
-
-        var product = ProductEntity.Create(
-            Guid.NewGuid(),
-            faker.Lorem.Sentence(2),
-            faker.Lorem.Sentence(5),
-            decimal.Parse(faker.Commerce.Price()),
-            3,
-            ProductEntity.ProductState.Active,
-            Guid.NewGuid(),
-            Guid.NewGuid());
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)!
-            .Returns(Task.FromResult(product));
-        productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.CompletedTask);
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-
-        //Act
-        var handler = new DeleteProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeTrue();
-        _testOutputHelper.WriteLineOperationResultErrors(result);
-    }
-    
-    [Fact]
-    public async Task Delete_Product_With_Null_ProductId_Should_Be_Success()
-    {
-        //Arrange
-        var command = new DeleteProductCommand(Guid.Empty);
-
-        var unitOfWorkMuck = Substitute.For<IUnitOfWork>();
-        var productRepositoryMock = Substitute.For<IProductRepository>();
-        var fileServiceMock = Substitute.For<IFileService>();
-
-        productRepositoryMock.GetByIdAsTrackAsync(Arg.Any<Guid>(), CancellationToken.None)
-            .Returns(Task.FromResult<ProductEntity?>(null));
-        productRepositoryMock.DeleteAsync(Arg.Any<ProductEntity>(), CancellationToken.None)
-            .Returns(Task.CompletedTask);
-        fileServiceMock.RemoveFileAsync(Arg.Any<string[]>(), CancellationToken.None)
-            .Returns(Task.FromResult);
-        unitOfWorkMuck.ProductRepository.Returns(productRepositoryMock);
-
-        //Act
-        var handler = new DeleteProductCommandHandler(unitOfWorkMuck, fileServiceMock);
-        var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
-
-        //Assertion
-        result.Result.Should().BeFalse();
-        result.ErrorMessages.Should().NotBeNullOrEmpty();
         
-        _testOutputHelper.WriteLineOperationResultErrors(result);
+        [Fact]
+        public async Task Handle_WhenUserIsNotFound_ShouldReturnFailureResult()
+        {
+            // Arrange
+            var command = new CreateProductCommand(
+                Guid.NewGuid(), Guid.NewGuid(), "Test", "Test", 100, 1, ProductEntity.ProductState.Active, null);
+
+            CategoryRepositoryMock.GetByIdAsync(command.CategoryId!.Value)!
+                .Returns(new CategoryEntity("Category"));
+            UserManagerMock.FindByIdAsync(command.UserId, CancellationToken.None)!
+                .Returns(Task.FromResult<UserEntity?>(null));
+
+            var handler = new CreateProductCommandHandler(UnitOfWorkMock, FileServiceMock, UserManagerMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Value == "User not found");
+            TestOutputHelper.WriteLineOperationResultErrors(result);
+        }
+
+        [Fact]
+        public async Task Handle_WithInvalidDomainData_ShouldReturnDomainFailureResult()
+        {
+            // Arrange
+            var command = new CreateProductCommand(
+                Guid.NewGuid(), Guid.NewGuid(), Faker.Commerce.ProductName(), Faker.Lorem.Sentence(),
+                -100, 5, ProductEntity.ProductState.Active, null); // Invalid Price
+
+             CategoryRepositoryMock.GetByIdAsync(command.CategoryId!.Value)!
+                .Returns(new CategoryEntity("Electronics"));
+            UserManagerMock.FindByIdAsync(command.UserId, CancellationToken.None)!
+                .Returns(new UserEntity(Faker.Name.FirstName(), Faker.Name.LastName(), Faker.Internet.UserName(), Faker.Internet.Email()));
+
+            var handler = new CreateProductCommandHandler(UnitOfWorkMock, FileServiceMock, UserManagerMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Key.Contains("Price"));
+            TestOutputHelper.WriteLineOperationResultErrors(result);
+        }
+    }
+    
+    public class EditProductTests : ProductFeaturesTestBase
+    {
+        public EditProductTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+        [Fact]
+        public async Task Handle_WithValidParameters_ShouldReturnSuccess()
+        {
+            // Arrange
+            var command = new EditProductCommand(
+                Guid.NewGuid(), "Updated Title", "Updated Desc", 150, 10,
+                ProductEntity.ProductState.Hidden, Guid.NewGuid(), null, null);
+
+            var existingProduct = ProductEntity.Create(
+                "Old Title", "Old Desc", 100, 5, ProductEntity.ProductState.Active, Guid.NewGuid(), Guid.NewGuid());
+            
+            ProductRepositoryMock.GetByIdAsTrackAsync(command.ProductId, CancellationToken.None)!
+                .Returns(existingProduct);
+            CategoryRepositoryMock.GetByIdAsync(command.CategoryId!.Value)!
+                .Returns(new CategoryEntity("New Category"));
+            
+            var handler = new EditProductCommandHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            existingProduct.Title.Should().Be(command.Title);
+            existingProduct.Description.Should().Be(command.Description);
+            existingProduct.Price.Should().Be(command.Price);
+            existingProduct.Quantity.Should().Be(command.Quantity);
+            existingProduct.State.Should().Be(command.State!.Value);
+            existingProduct.CategoryId.Should().Be(command.CategoryId!.Value);
+            await UnitOfWorkMock.Received(1).CommitAsync(CancellationToken.None);
+            TestOutputHelper.WriteLineOperationResultErrors(result);
+        }
+        
+        [Fact]
+        public async Task Handle_WhenProductIsNotFound_ShouldReturnFailureResult()
+        {
+            // Arrange
+             var command = new EditProductCommand(
+                Guid.NewGuid(), "Updated Title", "Updated Desc", 150, 10,
+                ProductEntity.ProductState.Hidden, Guid.NewGuid(), null, null);
+
+            ProductRepositoryMock.GetByIdAsTrackAsync(command.ProductId, CancellationToken.None)!
+                .Returns(Task.FromResult<ProductEntity?>(null));
+            CategoryRepositoryMock.GetByIdAsync(Arg.Any<Guid>())
+                .Returns(new CategoryEntity("Electronics"));
+            
+            var handler = new EditProductCommandHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Value == "Product not found");
+            TestOutputHelper.WriteLineOperationResultErrors(result);
+        }
+    }
+    
+    public class DeleteProductTests : ProductFeaturesTestBase
+    {
+        public DeleteProductTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+        [Fact]
+        public async Task Handle_WithValidProductId_ShouldReturnSuccess()
+        {
+            // Arrange
+            var command = new DeleteProductCommand(Guid.NewGuid());
+            var product = ProductEntity.Create("Title", "Desc", 10, 1, ProductEntity.ProductState.Active, Guid.NewGuid(), null);
+            product.AddImage(new ImageValueObject("file.jpg", "image/jpeg", "url"));
+
+            ProductRepositoryMock.GetByIdAsTrackAsync(command.Id, CancellationToken.None)!
+                .Returns(product);
+            
+            var handler = new DeleteProductCommandHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+            
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            await ProductRepositoryMock.Received(1).DeleteAsync(product, CancellationToken.None);
+            await UnitOfWorkMock.Received(1).CommitAsync(CancellationToken.None);
+            await FileServiceMock.Received(1).RemoveFileAsync(Arg.Is<string[]>(x => x.Contains("file.jpg")), CancellationToken.None);
+        }
+        
+        [Fact]
+        public async Task Handle_WhenProductIsNotFound_ShouldReturnNotFoundResult()
+        {
+            // Arrange
+            var command = new DeleteProductCommand(Guid.NewGuid());
+            ProductRepositoryMock.GetByIdAsTrackAsync(command.Id, CancellationToken.None)!
+                .Returns(Task.FromResult<ProductEntity?>(null));
+            
+            var handler = new DeleteProductCommandHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, ServiceProvider);
+            
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.IsNotFound.Should().BeTrue();
+            result.ErrorMessages.Should().Contain(e => e.Value == "Product not found");
+        }
+    }
+
+    public class GetProductDetailTests : ProductFeaturesTestBase
+    {
+        public GetProductDetailTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+        [Fact]
+        public async Task Handle_WithValidId_ShouldReturnProductDetails()
+        {
+            // Arrange
+            var query = new GetProductDetailByIdQuery(Guid.NewGuid());
+            var user = new UserEntity("John", "Doe", "johndoe", "john@test.com");
+            var category = new CategoryEntity("Electronics");
+            var product = ProductEntity.Create(Guid.NewGuid(), "Laptop", "A good laptop", 1200, 10, ProductEntity.ProductState.Active, user, category);
+            product.AddImage(new ImageValueObject("laptop.jpg", "image/jpeg", string.Empty));
+            
+            ProductRepositoryMock.GetDetailsByIdAsync(query.Id, CancellationToken.None)!
+                .Returns(product);
+            FileServiceMock.GetFilesByNameAsync(Arg.Any<List<string>>(), CancellationToken.None)
+                .Returns(new List<GetFileModel> { new("http://example.com/laptop.jpg", "image/jpeg", "laptop.jpg") });
+
+            var handler = new GetProductDetailByIdQueryHandler(UnitOfWorkMock, FileServiceMock, Mapper);
+            
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, ServiceProvider);
+            
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().NotBeNull();
+            result.Result!.ProductId.Should().Be(product.Id);
+            result.Result.Title.Should().Be("Laptop");
+            result.Result.OwnerFirstName.Should().Be("John");
+            result.Result.CategoryTitle.Should().Be("Electronics");
+            result.Result.ProductImages.Should().HaveCount(1);
+            result.Result.ProductImages.First().ImageUrl.Should().Be("http://example.com/laptop.jpg");
+        }
+        
+        [Fact]
+        public async Task Handle_WhenProductIsNotFound_ShouldReturnNotFoundResult()
+        {
+            // Arrange
+            var query = new GetProductDetailByIdQuery(Guid.NewGuid());
+            
+            ProductRepositoryMock.GetDetailsByIdAsync(query.Id, CancellationToken.None)!
+                .Returns(Task.FromResult<ProductEntity?>(null));
+
+            var handler = new GetProductDetailByIdQueryHandler(UnitOfWorkMock, FileServiceMock, Mapper);
+            
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, ServiceProvider);
+            
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.IsNotFound.Should().BeTrue();
+        }
+    }
+
+    public class GetProductsTests : ProductFeaturesTestBase
+    {
+        public GetProductsTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper) { }
+
+        [Fact]
+        public async Task Handle_WithoutCategoryFilter_ShouldReturnProducts()
+        {
+            // Arrange
+            var query = new GetProductsQuery("test", 1, 10, null);
+            var products = new List<ProductEntity>
+            {
+                ProductEntity.Create("P1", "D1", 10, 1, ProductEntity.ProductState.Active, Guid.NewGuid(), null),
+                ProductEntity.Create("P2", "D2", 20, 2, ProductEntity.ProductState.Active, Guid.NewGuid(), null)
+            };
+            products[0].AddImage(new ImageValueObject("p1.jpg", "image/jpeg", ""));
+            
+            ProductRepositoryMock.GetProductsAsync(query.Title, query.CurrentPage, query.PageCount, query.CategoryId, CancellationToken.None)!
+                .Returns(products);
+            FileServiceMock.GetFilesByNameAsync(Arg.Is<List<string>>(x => x.Contains("p1.jpg")), CancellationToken.None)
+                .Returns(new List<GetFileModel>{new("p1.jpg", "image/jpeg", "url1")});
+
+            var handler = new GetProductsQueryHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().HaveCount(2);
+            result.Result.First(p => p.Title == "P1").ProductImage.Should().NotBeNull();
+            result.Result.First(p => p.Title == "P2").ProductImage.Should().BeNull();
+        }
+        
+        [Fact]
+        public async Task Handle_WhenCategoryIsNotFound_ShouldReturnFailureResult()
+        {
+            // Arrange
+            var query = new GetProductsQuery("test", 1, 10, Guid.NewGuid());
+            
+            CategoryRepositoryMock.GetByIdAsync(query.CategoryId!.Value, CancellationToken.None)!
+                .Returns(Task.FromResult<CategoryEntity?>(null));
+
+            var handler = new GetProductsQueryHandler(UnitOfWorkMock, FileServiceMock);
+
+            // Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, ServiceProvider);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Value == "Category not found");
+        }
     }
 }

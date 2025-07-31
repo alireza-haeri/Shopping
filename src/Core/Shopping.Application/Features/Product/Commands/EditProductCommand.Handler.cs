@@ -23,7 +23,7 @@ public class EditProductCommandHandler(IUnitOfWork unitOfWork, IFileService file
 
         var product = await unitOfWork.ProductRepository.GetByIdAsTrackAsync(request.ProductId, cancellationToken);
         if (product is null)
-            return OperationResult<bool>.FailureResult(nameof(EditProductCommand.ProductId), "Product not found");
+            return OperationResult<bool>.NotFoundResult(nameof(EditProductCommand.ProductId), "Product not found");
 
         try
         {
@@ -42,13 +42,13 @@ public class EditProductCommandHandler(IUnitOfWork unitOfWork, IFileService file
             return OperationResult<bool>.DomainFailureResult(e.Message);
         }
 
-        if (request.RemovedImages?.Length != 0)
+        if (request.RemovedImages?.Length > 0)
         {
             await fileService.RemoveFileAsync(request.RemovedImages, cancellationToken);
             product.RemoveImages(request.RemovedImages);
         }
 
-        if (request.AddedImages?.Count != 0)
+        if (request.AddedImages?.Count > 0)
         {
             var savedFiles = await fileService.SaveFilesAsync(
                 request.AddedImages

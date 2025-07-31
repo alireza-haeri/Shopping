@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shopping.Application.Features.Category.Commands;
 using Shopping.Application.Features.Category.Queries;
+using Shopping.Domain.Entities.Cart;
 using Shopping.Domain.Entities.Product;
 using Shopping.Domain.Entities.User;
 using Shopping.Infrastructure.Persistence.Repositories.Common;
@@ -31,6 +32,11 @@ namespace Shopping.Infrastructure.Persistence.Test
         /// </summary>
         private async Task ResetDatabaseAsync()
         {
+            // این دو خط را اضافه کنید
+            await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [cart].[CartItems]");
+            await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [cart].[Carts]");
+
+            // این خطوط از قبل وجود داشتند
             await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [product].[Products]");
             await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [product].[Categories]");
             await _dbContext.Database.ExecuteSqlRawAsync("DELETE FROM [user].[Users]");
@@ -41,7 +47,8 @@ namespace Shopping.Infrastructure.Persistence.Test
         /// </summary>
         protected async Task<UserEntity> SeedUserAsync()
         {
-            var user = new UserEntity(Faker.Person.FirstName, Faker.Person.LastName, Faker.Person.UserName, Faker.Person.Email);
+            var user = new UserEntity(Faker.Person.FirstName, Faker.Person.LastName, Faker.Person.UserName,
+                Faker.Person.Email);
             _dbContext.Set<UserEntity>().Add(user);
             await _dbContext.SaveChangesAsync();
             return user;
@@ -83,10 +90,11 @@ namespace Shopping.Infrastructure.Persistence.Test
                 var category = new CategoryEntity("Electronics");
                 await UnitOfWork.CategoryRepository.CreateAsync(category);
                 await UnitOfWork.CommitAsync();
-                
-                var product = ProductEntity.Create("Laptop", "Desc", 1500, 10, ProductEntity.ProductState.Active, user.Id, category.Id);
+
+                var product = ProductEntity.Create("Laptop", "Desc", 1500, 10, ProductEntity.ProductState.Active,
+                    user.Id, category.Id);
                 await UnitOfWork.ProductRepository.CreateAsync(product);
-                
+
                 // Act & Assert: Check that commit does not throw an exception
                 await FluentActions.Awaiting(() => UnitOfWork.CommitAsync())
                     .Should().NotThrowAsync<DbUpdateException>();
@@ -105,22 +113,26 @@ namespace Shopping.Infrastructure.Persistence.Test
                 var category = new CategoryEntity("Tech");
                 await UnitOfWork.CategoryRepository.CreateAsync(category);
                 await UnitOfWork.CommitAsync();
-                
+
                 // Now, create products using the real Ids of the dependencies
-                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Laptop Dell", "D", 1, 1, ProductEntity.ProductState.Active, user.Id, category.Id));
-                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Laptop HP", "D", 1, 1, ProductEntity.ProductState.Active, user.Id, category.Id));
-                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Mouse", "D", 1, 1, ProductEntity.ProductState.Active, user.Id, category.Id));
+                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Laptop Dell", "D", 1, 1,
+                    ProductEntity.ProductState.Active, user.Id, category.Id));
+                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Laptop HP", "D", 1, 1,
+                    ProductEntity.ProductState.Active, user.Id, category.Id));
+                await UnitOfWork.ProductRepository.CreateAsync(ProductEntity.Create("Mouse", "D", 1, 1,
+                    ProductEntity.ProductState.Active, user.Id, category.Id));
                 await UnitOfWork.CommitAsync();
-                
+
                 // Act
-                var result = await UnitOfWork.ProductRepository.GetProductsAsync("Laptop", 1, 10, null, CancellationToken.None);
+                var result =
+                    await UnitOfWork.ProductRepository.GetProductsAsync("Laptop", 1, 10, null, CancellationToken.None);
 
                 // Assert
                 result.Should().HaveCount(2);
                 result.Should().OnlyContain(p => p.Title.Contains("Laptop"));
             }
         }
-        
+
         public class MediatorWithPersistenceTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
             : PersistenceTestBase(setup, testOutputHelper)
         {
@@ -130,14 +142,68 @@ namespace Shopping.Infrastructure.Persistence.Test
                 var command = new CreateCategoryCommand("Category From Mediator");
                 var result = await Sender.Send(command);
                 result.IsSuccess.Should().BeTrue();
-                
+
                 var query = new GetAllCategoryQuery();
                 var categories = await Sender.Send(query);
-                
+
                 categories.Result.Should().NotBeNull();
                 // Assuming the DTO from GetAllCategoryQuery has a 'Title' property
                 // If it's different (like 'CategoryTitle'), adjust here.
                 categories.Result!.Should().ContainSingle(c => c.CategoryTitle == "Category From Mediator");
+            }
+        }
+
+        // این کلاس جدید را به فایل PersistenceIntegrationTests.cs اضافه کنید
+
+        public class CartRepositoryTests(PersistenceTestSetup setup, ITestOutputHelper testOutputHelper)
+            : PersistenceTestBase(setup, testOutputHelper)
+        {
+            [Fact]
+            public async Task CreateCartAsync_Should_AddCartToDatabase()
+            {
+                // Arrange: یک کاربر و یک سبد خرید برای او می‌سازیم
+                var user = await SeedUserAsync();
+                var cart = CartEntity.Create(user.Id);
+
+                // Act: سبد خرید را در دیتابیس ذخیره می‌کنیم
+                await UnitOfWork.CartRepository.CreateCartAsync(cart);
+                await UnitOfWork.CommitAsync();
+
+                // Assert: بررسی می‌کنیم که سبد خرید با همان مشخصات در دیتابیس وجود دارد
+                var result = await UnitOfWork.CartRepository.GetCartByUserIdWithTrackingAsync(user.Id);
+                result.Should().NotBeNull();
+                result!.Id.Should().Be(cart.Id);
+                result.UserId.Should().Be(user.Id);
+            }
+
+            [Fact]
+            public async Task GetCartByUserIdWithTrackingAsync_Should_LoadCartItems_Correctly()
+            {
+                // Arrange: یک کاربر، یک محصول و یک سبد خرید می‌سازیم
+                var user = await SeedUserAsync();
+                // برای این تست به یک محصول نیاز داریم که به سبد اضافه کنیم
+                var product = ProductEntity.Create("Test Product", "Desc", 100, 10, ProductEntity.ProductState.Active,
+                    user.Id, null);
+                await UnitOfWork.ProductRepository.CreateAsync(product);
+
+                var cart = CartEntity.Create(user.Id);
+                // با استفاده از منطق دامنه، محصول را به سبد اضافه می‌کنیم
+                cart.AddItem(product.Id, 2, product.Price);
+
+                await UnitOfWork.CartRepository.CreateCartAsync(cart);
+                await UnitOfWork.CommitAsync();
+
+                // Act: سبد خرید را از دیتابیس می‌خوانیم
+                var result = await UnitOfWork.CartRepository.GetCartByUserIdWithTrackingAsync(user.Id);
+
+                // Assert: بررسی می‌کنیم که آیتم‌ها نیز همراه با سبد خوانده شده‌اند
+                result.Should().NotBeNull();
+                result!.Items.Should().NotBeNullOrEmpty(); // آیتم‌ها نباید خالی باشند
+                result.Items.Should().HaveCount(1); // باید یک آیتم داشته باشد
+
+                var cartItem = result.Items.First();
+                cartItem.ProductId.Should().Be(product.Id); // مشخصات آیتم باید درست باشد
+                cartItem.Quantity.Should().Be(2);
             }
         }
     }

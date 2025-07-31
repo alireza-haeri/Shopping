@@ -9,7 +9,7 @@ public class UnitOfWork(ShoppingDbContext db) : IUnitOfWork
 {
     public ICategoryRepository CategoryRepository { get; } = new CategoryRepository(db);
     public IProductRepository ProductRepository { get; } = new ProductRepository(db);
-    public ICartRepository CartRepository { get; }
+    public ICartRepository CartRepository { get; } = new CartRepository(db);
 
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {

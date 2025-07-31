@@ -10,7 +10,9 @@ internal class CartRepository(ShoppingDbContext db) : BaseRepository<CartEntity>
     public async Task<CartEntity?> GetCartByUserIdWithTrackingAsync(Guid userId,
         CancellationToken cancellationToken = default)
     {
-        return await TableNoTracking.FirstOrDefaultAsync(c=>c.UserId.Equals(userId), cancellationToken);
+        return await Table
+            .Include(c=>c.Items)
+            .FirstOrDefaultAsync(c=>c.UserId.Equals(userId), cancellationToken);
     }
 
     public async Task CreateCartAsync(CartEntity cart, CancellationToken cancellationToken = default)

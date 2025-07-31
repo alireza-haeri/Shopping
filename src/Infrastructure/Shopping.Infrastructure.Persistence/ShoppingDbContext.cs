@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shopping.Application.Contracts;
 using Shopping.Domain.Common;
+using Shopping.Domain.Entities.Cart;
 using Shopping.Infrastructure.Persistence.Extensions;
 
 namespace Shopping.Infrastructure.Persistence;
 
-public class ShoppingDbContext(DbContextOptions<ShoppingDbContext> options) : DbContext(options)
+public class ShoppingDbContext(DbContextOptions<ShoppingDbContext> options) : DbContext(options) ,IReadDbContext
 {
+    IQueryable<CartEntity> IReadDbContext.Carts => this.Set<CartEntity>().AsNoTracking();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.RegisterEntities<IEntity>(typeof(IEntity).Assembly);
@@ -54,4 +57,5 @@ public class ShoppingDbContext(DbContextOptions<ShoppingDbContext> options) : Db
                 ((IEntity)entity.Entity).ModifiedDate=DateTime.Now;
         }
     }
+
 }

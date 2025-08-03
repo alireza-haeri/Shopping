@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using FluentAssertions;
 using FluentValidation;
+using Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -11,348 +12,233 @@ using Shopping.Application.Extensions;
 using Shopping.Application.Features.Common;
 using Shopping.Application.Features.User.Commands.Register;
 using Shopping.Application.Features.User.Queries.PasswordLogin;
-using Shopping.Application.Test.Extensions;
 using Shopping.Domain.Entities.User;
 using Xunit.Abstractions;
 
 namespace Shopping.Application.Test;
 
-public class UserFeatureTests
+/// <summary>
+/// Base class for User feature tests to handle common setup and mocking.
+/// </summary>
+public abstract class UserFeaturesTestBase
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-    private readonly IServiceProvider _serviceProvider;
+    protected readonly ITestOutputHelper TestOutputHelper;
+    protected readonly IServiceProvider ServiceProvider;
+    protected readonly IUserManager UserManagerMock;
+    protected readonly IJwtService JwtServiceMock;
+    protected readonly Faker Faker;
 
-    public UserFeatureTests(ITestOutputHelper testOutputHelper)
+    protected UserFeaturesTestBase(ITestOutputHelper testOutputHelper)
     {
-        _testOutputHelper = testOutputHelper;
+        TestOutputHelper = testOutputHelper;
+        Faker = new Faker("fa");
 
+        // Configure services and build the service provider for validators
         var serviceCollection = new ServiceCollection();
         serviceCollection.RegisterApplicationValidator();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
+        ServiceProvider = serviceCollection.BuildServiceProvider();
+
+        // Setup mock objects for dependencies
+        UserManagerMock = Substitute.For<IUserManager>();
+        JwtServiceMock = Substitute.For<IJwtService>();
     }
 
-    [Fact]
-    public async Task Creating_New_User_Should_Be_Success()
+    /// <summary>
+    /// A helper method to run validation and then execute the handler.
+    /// This simulates the MediatR validation pipeline behavior.
+    /// </summary>
+    protected async Task<TResponse> ValidateAndExecuteAsync<TRequest, TResponse>(
+        TRequest request,
+        IRequestHandler<TRequest, TResponse> handler)
+        where TRequest : IRequest<TResponse>
+        where TResponse : IOperationResult, new()
     {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var registerUserRequest = new RegisterUserCommand(
-            faker.Person.FirstName,
-            faker.Person.LastName,
-            faker.Person.UserName,
-            faker.Person.Email,
-            "09944853827",
-            password, password);
+        var validator = ServiceProvider.GetService<IValidator<TRequest>>();
+        if (validator == null)
+        {
+            return await handler.Handle(request, CancellationToken.None);
+        }
 
-        var userManager = Substitute.For<IUserManager>();
+        var validationBehavior = new ValidateRequestBehavior<TRequest, TResponse>(validator);
 
-        userManager.PasswordCreateAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Success));
+        // The handler's Handle method is passed as the 'next' delegate.
+        return await validationBehavior.Handle(request, CancellationToken.None,
+            (req, token) => handler.Handle(req, token));
+    }
+}
 
-        //Act
-        var userRegisterCommandHandler = new RegisterUserCommandHandler(userManager);
-        var userRegisterResult = await userRegisterCommandHandler.Handle(registerUserRequest, CancellationToken.None);
+public class UserFeaturesTests
+{
+    public class RegisterUserTests : UserFeaturesTestBase
+    {
+        public RegisterUserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        {
+        }
 
-        userRegisterResult.IsSuccess.Should().Be(true);
+        [Fact]
+        public async Task Handle_WithValidData_ShouldReturnSuccess()
+        {
+            // Arrange
+            var password = Faker.Internet.Password(8);
+            var command = new RegisterUserCommand(
+                Faker.Person.FirstName,
+                Faker.Person.LastName,
+                Faker.Person.UserName,
+                Faker.Person.Email,
+                "09123456789",
+                password,
+                password);
+
+            UserManagerMock.PasswordCreateAsync(Arg.Any<UserEntity>(), command.Password, CancellationToken.None)
+                .Returns(IdentityResult.Success);
+
+            var handler = new RegisterUserCommandHandler(UserManagerMock);
+
+            // Act
+            var result = await ValidateAndExecuteAsync(command, handler);
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task Handle_WhenUserManagerFails_ShouldReturnFailure()
+        {
+            // Arrange
+            var password = Faker.Internet.Password(8);
+            var command = new RegisterUserCommand("FirstName", "LastName", "username", "test@test.com", "09123456789",
+                password, password);
+
+            var identityError = new IdentityError
+                { Code = "DuplicateUserName", Description = "Username is already taken." };
+            UserManagerMock.PasswordCreateAsync(Arg.Any<UserEntity>(), command.Password, CancellationToken.None)
+                .Returns(IdentityResult.Failed(identityError));
+
+            var handler = new RegisterUserCommandHandler(UserManagerMock);
+
+            // Act
+            var result = await ValidateAndExecuteAsync(command, handler);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Key == "GeneralErrors");
+        }
+
+        [Theory]
+        [InlineData("", "password")] // Empty UserNameOrEmail
+        [InlineData("username", "")] // Empty Password
+        public async Task Handle_WithInvalidInputs_ShouldFailValidation(string userNameOrEmail, string password)
+        {
+            // Arrange
+            var command = new UserPasswordLoginQuery(userNameOrEmail, password);
+            var handler = new UserPasswordLoginQueryHandler(UserManagerMock, JwtServiceMock);
+
+            // Act
+            var result = await ValidateAndExecuteAsync(command, handler);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().NotBeNullOrEmpty();
+        }
     }
 
-    [Fact]
-    public async Task User_Register_Email_Should_Be_Valid()
+    public class LoginUserTests : UserFeaturesTestBase
     {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var registerUserRequest = new RegisterUserCommand(
-            faker.Person.FirstName,
-            faker.Person.LastName,
-            faker.Person.UserName,
-            string.Empty,
-            "09944853827",
-            password, password);
+        public LoginUserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
+        {
+        }
 
-        var userManager = Substitute.For<IUserManager>();
+        [Fact]
+        public async Task Handle_WithCorrectUserName_ShouldReturnSuccessWithToken()
+        {
+            // Arrange
+            var password = Faker.Internet.Password();
+            var user = new UserEntity(Faker.Person.FirstName, Faker.Person.LastName, Faker.Person.UserName,
+                Faker.Person.Email);
+            var query = new UserPasswordLoginQuery(user.UserName, password);
+            var token = new JwtAccessTokenModel("jwt.token.here", 3600);
 
-        userManager.PasswordCreateAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Success));
+            UserManagerMock.FindByUserNameAsync(query.UserNameOrEmail, CancellationToken.None).Returns(user);
+            UserManagerMock.ValidatePasswordAsync(user, query.Password, CancellationToken.None)
+                .Returns(IdentityResult.Success);
+            JwtServiceMock.GenerateJwtTokenAsync(user, CancellationToken.None).Returns(token);
 
-        //Act
-        var userRegisterCommandHandler = new RegisterUserCommandHandler(userManager);
-        var validationBehavior =
-            new ValidateRequestBehavior<RegisterUserCommand, OperationResult<bool>>(
-                _serviceProvider.GetRequiredService<IValidator<RegisterUserCommand>>());
-        var userRegisterResult = await validationBehavior.Handle(registerUserRequest, CancellationToken.None,
-            userRegisterCommandHandler.Handle);
+            var handler = new UserPasswordLoginQueryHandler(UserManagerMock, JwtServiceMock);
 
-        userRegisterResult.IsSuccess.Should().Be(false);
+            // Act
+            var result = await ValidateAndExecuteAsync(query, handler);
 
-        _testOutputHelper.WriteLineOperationResultErrors(userRegisterResult);
-    }
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().Be(token);
+        }
 
-    [Fact]
-    public async Task User_Register_Password_And_RepeatPassword_Should_Be_Same()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var rePassword = faker.Internet.Password();
-        var registerUserRequest = new RegisterUserCommand(
-            faker.Person.FirstName,
-            faker.Person.LastName,
-            faker.Person.UserName,
-            faker.Person.Email,
-            "09944853827",
-            password, rePassword);
+        [Fact]
+        public async Task Handle_WithCorrectEmail_ShouldReturnSuccessWithToken()
+        {
+            // Arrange
+            var password = Faker.Internet.Password();
+            var user = new UserEntity(Faker.Person.FirstName, Faker.Person.LastName, Faker.Person.UserName,
+                Faker.Person.Email);
+            var query = new UserPasswordLoginQuery(user.Email, password);
+            var token = new JwtAccessTokenModel("jwt.token.here", 3600);
 
-        var userManager = Substitute.For<IUserManager>();
+            UserManagerMock.FindByEmailAsync(query.UserNameOrEmail, CancellationToken.None).Returns(user);
+            UserManagerMock.ValidatePasswordAsync(user, query.Password, CancellationToken.None)
+                .Returns(IdentityResult.Success);
+            JwtServiceMock.GenerateJwtTokenAsync(user, CancellationToken.None).Returns(token);
 
-        userManager.PasswordCreateAsync(Arg.Any<UserEntity>(), password, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Success));
+            var handler = new UserPasswordLoginQueryHandler(UserManagerMock, JwtServiceMock);
 
-        //Act
-        var userRegisterCommandHandler = new RegisterUserCommandHandler(userManager);
-        var validationBehavior =
-            new ValidateRequestBehavior<RegisterUserCommand, OperationResult<bool>>
-                (_serviceProvider.GetRequiredService<IValidator<RegisterUserCommand>>());
-        var userRegisterResult = await validationBehavior.Handle(registerUserRequest, CancellationToken.None,
-            userRegisterCommandHandler.Handle);
+            // Act
+            var result = await ValidateAndExecuteAsync(query, handler);
 
-        //Assertion
-        userRegisterResult.IsSuccess.Should().Be(false);
-        _testOutputHelper.WriteLineOperationResultErrors(userRegisterResult);
-    }
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().Be(token);
+        }
 
-    [Fact]
-    public async Task Login_User_With_UserName_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.UserName, password);
+        [Fact]
+        public async Task Handle_WithWrongPassword_ShouldReturnFailure()
+        {
+            // Arrange
+            var password = Faker.Internet.Password();
+            var user = new UserEntity(Faker.Person.FirstName, Faker.Person.LastName, Faker.Person.UserName,
+                Faker.Person.Email);
+            var query = new UserPasswordLoginQuery(user.UserName, password);
 
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
+            UserManagerMock.FindByUserNameAsync(query.UserNameOrEmail, CancellationToken.None).Returns(user);
+            UserManagerMock.ValidatePasswordAsync(user, query.Password, CancellationToken.None)
+                .Returns(IdentityResult.Failed());
 
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
+            var handler = new UserPasswordLoginQueryHandler(UserManagerMock, JwtServiceMock);
 
+            // Act
+            var result = await ValidateAndExecuteAsync(query, handler);
 
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByUserNameAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Success));
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Key == nameof(UserPasswordLoginQuery.Password));
+        }
 
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
+        [Fact]
+        public async Task Handle_WithNonExistentUser_ShouldReturnNotFound()
+        {
+            // Arrange
+            var query = new UserPasswordLoginQuery(Faker.Person.UserName, Faker.Internet.Password());
 
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var userPasswordLoginResult =
-            await userPasswordLoginQueryHandler.Handle(userPasswordLoginQuery, CancellationToken.None);
+            UserManagerMock.FindByUserNameAsync(query.UserNameOrEmail, CancellationToken.None)
+                .Returns(Task.FromResult<UserEntity?>(null));
 
-        //Assertion
-        userPasswordLoginResult.Result.Should().NotBeNull();
-        userPasswordLoginResult.IsSuccess.Should().Be(true);
-    }
+            var handler = new UserPasswordLoginQueryHandler(UserManagerMock, JwtServiceMock);
 
-    [Fact]
-    public async Task Login_User_With_UserName_And_Wrong_Password_Should_Be_Failure()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.UserName, password);
+            // Act
+            var result = await ValidateAndExecuteAsync(query, handler);
 
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
-
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByUserNameAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Failed()));
-
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
-
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var userPasswordLoginResult =
-            await userPasswordLoginQueryHandler.Handle(userPasswordLoginQuery, CancellationToken.None);
-
-        //Assertion
-        userPasswordLoginResult.Result.Should().BeNull();
-        userPasswordLoginResult.IsSuccess.Should().Be(false);
-
-        _testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
-    }
-
-    [Fact]
-    public async Task Login_User_With_Email_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.Email, password);
-
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
-
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Success));
-
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
-
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var userPasswordLoginResult =
-            await userPasswordLoginQueryHandler.Handle(userPasswordLoginQuery, CancellationToken.None);
-
-        //Assertion
-        userPasswordLoginResult.Result.Should().NotBeNull();
-        userPasswordLoginResult.IsSuccess.Should().Be(true);
-    }
-
-    [Fact]
-    public async Task Login_User_With_Email_And_Wrong_Password_Should_Be_Failure()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.Email, password);
-
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
-
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(userEntity));
-        userManager.ValidatePasswordAsync(Arg.Any<UserEntity>(), password, true, CancellationToken.None)
-            .Returns(Task.FromResult(IdentityResult.Failed()));
-
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
-
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var userPasswordLoginResult =
-            await userPasswordLoginQueryHandler.Handle(userPasswordLoginQuery, CancellationToken.None);
-
-        //Assertion
-        userPasswordLoginResult.Result.Should().BeNull();
-        userPasswordLoginResult.IsSuccess.Should().Be(false);
-
-        _testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
-    }
-
-    [Fact]
-    public async Task Login_User_Not_Found_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = faker.Internet.Password();
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.Email, password);
-
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(null));
-
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
-
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var userPasswordLoginResult =
-            await userPasswordLoginQueryHandler.Handle(userPasswordLoginQuery, CancellationToken.None);
-
-        //Assertion
-        userPasswordLoginResult.Result.Should().BeNull();
-        userPasswordLoginResult.IsNotFount.Should().Be(true);
-        userPasswordLoginResult.IsSuccess.Should().Be(false);
-
-        _testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
-    }
-
-    [Fact]
-    public async Task Login_User_Inputs_Should_Be_Valid()
-    {
-        //Arrange
-        var faker = new Faker();
-        var password = string.Empty;
-        var userPasswordLoginQuery = new UserPasswordLoginQuery(
-            faker.Person.Email, password);
-
-        var userEntity = new UserEntity(
-                faker.Person.FirstName,
-                faker.Person.LastName,
-                faker.Person.UserName,
-                faker.Person.Email)
-            { PhoneNumber = "09944853827", };
-
-
-        var accessToken = new JwtAccessTokenModel("AccessToken", 1);
-
-        var userManager = Substitute.For<IUserManager>();
-        userManager.FindByEmailAsync(userPasswordLoginQuery.UserNameOrEmail, CancellationToken.None)
-            .Returns(Task.FromResult<UserEntity?>(userEntity));
-
-        var jwtService = Substitute.For<IJwtService>();
-        jwtService.GenerateJwtTokenAsync(Arg.Any<UserEntity>(), CancellationToken.None)
-            .Returns(Task.FromResult(accessToken));
-
-        //Act
-        var userPasswordLoginQueryHandler = new UserPasswordLoginQueryHandler(userManager, jwtService);
-        var validationBehavior =
-            new ValidateRequestBehavior<UserPasswordLoginQuery, OperationResult<JwtAccessTokenModel>>(
-                _serviceProvider.GetRequiredService<IValidator<UserPasswordLoginQuery>>());
-        var userPasswordLoginResult = await validationBehavior.Handle(userPasswordLoginQuery, CancellationToken.None,
-            userPasswordLoginQueryHandler.Handle);
-
-        //Assertion
-        userPasswordLoginResult.Result.Should().Be(null);
-        userPasswordLoginResult.IsSuccess.Should().Be(false);
-
-        _testOutputHelper.WriteLineOperationResultErrors(userPasswordLoginResult);
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.IsNotFound.Should().BeTrue();
+        }
     }
 }

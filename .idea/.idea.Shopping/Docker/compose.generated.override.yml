@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  shopping.api:
+    build:
+      context: "D:\\Develop\\Projects\\Shopping\\docker"
+      dockerfile: "Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/Shopping.Api.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "shopping-api:dev"
+    ports: []
+    volumes:
+    - "D:\\Develop\\Projects\\Shopping\\src\\Ui\\Shopping.Api:/app:rw"
+    - "D:\\Develop\\Projects\\Shopping:/src:rw"
+    - "C:\\Users\\AliRezaHM\\.nuget\\packages:/home/app/.nuget/packages"
+    working_dir: "/app"

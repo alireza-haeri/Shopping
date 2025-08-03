@@ -8,5 +8,5 @@ public sealed class UserClaimEntity : IdentityUserClaim<Guid> , IEntity
     public UserEntity User { get; set; }
     
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifyDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 }

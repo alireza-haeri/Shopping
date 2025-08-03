@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0"/>
+        <PackageReference Include="Asp.Versioning.Http" Version="8.1.0"/>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0"/>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Infrastructure\Shopping.Infrastructure.CrossCutting\Shopping.Infrastructure.CrossCutting.csproj" />
+      <ProjectReference Include="..\..\..\Infrastructure\Shopping.Infrastructure.Identity\Shopping.Infrastructure.Identity.csproj" />
+      <ProjectReference Include="..\..\Core\Shopping.Application\Shopping.Application.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Shopping.Infrastructure.Persistence\Shopping.Infrastructure.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>

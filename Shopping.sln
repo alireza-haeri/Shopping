@@ -14,6 +14,45 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Application", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Application.Test", "tests\Shopping.Application.Test\Shopping.Application.Test.csproj", "{E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{36617759-5AFB-4D30-99CE-5A7683E9050D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Persistence", "src\Infrastructure\Shopping.Infrastructure.Persistence\Shopping.Infrastructure.Persistence.csproj", "{896EB244-B3D4-4320-92AC-2C63441FDD5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Persistence.Test", "tests\Shopping.Infrastructure.Persistence.Test\Shopping.Infrastructure.Persistence.Test.csproj", "{13FA4503-4683-462D-8EDD-38E84FF898DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Identity", "Infrastructure\Shopping.Infrastructure.Identity\Shopping.Infrastructure.Identity.csproj", "{60D67DE9-AB54-4B78-81CF-D411E59687F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.Identity.Test", "tests\Shopping.Infrastructure.Identity.Test\Shopping.Infrastructure.Identity.Test.csproj", "{DE4CD50E-6483-40B1-AE55-0BC6584175C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.CrossCutting", "Infrastructure\Shopping.Infrastructure.CrossCutting\Shopping.Infrastructure.CrossCutting.csproj", "{76488A5D-1466-41F5-B951-0AA61C50F365}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{EBDF2FCD-C23E-49F2-A1A5-23C49C647354}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+		.dockerignore = .dockerignore
+		docker\compose.yaml = docker\compose.yaml
+		docker\.env = docker\.env
+		docker\docker-compose.yml = docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "seq", "seq", "{959072C0-EEFB-480C-82D4-F47E91E67307}"
+	ProjectSection(SolutionItems) = preProject
+		docker\seq\docker-compose.yml = docker\seq\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "minio", "minio", "{8A89DACF-71CE-4A77-B401-C62F222A7432}"
+	ProjectSection(SolutionItems) = preProject
+		docker\minio\docker-compose.yml = docker\minio\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Infrastructure.FileStorage.Minio.Test", "tests\Shopping.Infrastructure.FileStorage.Minio.Test\Shopping.Infrastructure.FileStorage.Minio.Test.csproj", "{0F31B557-4529-4EB1-B247-398F884DCFF4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ui", "Ui", "{A8CB4DDB-918B-4866-B30B-E44D1CC26915}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.WebFramework", "src\Ui\Shopping.WebFramework\Shopping.WebFramework.csproj", "{B744B302-50AA-4E5B-A567-00C4218CDE87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopping.Api", "src\Ui\Shopping.Api\Shopping.Api.csproj", "{DD50909A-B02E-4DD9-A267-AEA277CD06D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +64,18 @@ Global
 		{0072C4D2-0A4A-458E-AB5C-EAAE166A6BCF} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
 		{8DC6D925-8669-4CD9-97AC-84A4BFBA4D04} = {88651937-2D77-4C34-85F8-49041AF8572B}
 		{E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
+		{36617759-5AFB-4D30-99CE-5A7683E9050D} = {D701FF8D-DADD-45A6-943A-6E6B8E2DD519}
+		{896EB244-B3D4-4320-92AC-2C63441FDD5D} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
+		{13FA4503-4683-462D-8EDD-38E84FF898DB} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
+		{DE4CD50E-6483-40B1-AE55-0BC6584175C1} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
+		{76488A5D-1466-41F5-B951-0AA61C50F365} = {36617759-5AFB-4D30-99CE-5A7683E9050D}
+		{959072C0-EEFB-480C-82D4-F47E91E67307} = {EBDF2FCD-C23E-49F2-A1A5-23C49C647354}
+		{8A89DACF-71CE-4A77-B401-C62F222A7432} = {EBDF2FCD-C23E-49F2-A1A5-23C49C647354}
+		{0F31B557-4529-4EB1-B247-398F884DCFF4} = {2F9FA927-FCC2-48CB-8AF7-B0E6F98CE083}
+		{B744B302-50AA-4E5B-A567-00C4218CDE87} = {A8CB4DDB-918B-4866-B30B-E44D1CC26915}
+		{DD50909A-B02E-4DD9-A267-AEA277CD06D7} = {A8CB4DDB-918B-4866-B30B-E44D1CC26915}
+		{A8CB4DDB-918B-4866-B30B-E44D1CC26915} = {D701FF8D-DADD-45A6-943A-6E6B8E2DD519}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{570CACD8-6D3A-4C94-A99C-A1A8AC873381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -43,5 +94,37 @@ Global
 		{E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0ECC61E-65D1-4B99-B2FB-BEB7AAF76F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{896EB244-B3D4-4320-92AC-2C63441FDD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{896EB244-B3D4-4320-92AC-2C63441FDD5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{896EB244-B3D4-4320-92AC-2C63441FDD5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{896EB244-B3D4-4320-92AC-2C63441FDD5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FA4503-4683-462D-8EDD-38E84FF898DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D67DE9-AB54-4B78-81CF-D411E59687F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE4CD50E-6483-40B1-AE55-0BC6584175C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE4CD50E-6483-40B1-AE55-0BC6584175C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE4CD50E-6483-40B1-AE55-0BC6584175C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE4CD50E-6483-40B1-AE55-0BC6584175C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76488A5D-1466-41F5-B951-0AA61C50F365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76488A5D-1466-41F5-B951-0AA61C50F365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76488A5D-1466-41F5-B951-0AA61C50F365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76488A5D-1466-41F5-B951-0AA61C50F365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F31B557-4529-4EB1-B247-398F884DCFF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F31B557-4529-4EB1-B247-398F884DCFF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F31B557-4529-4EB1-B247-398F884DCFF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F31B557-4529-4EB1-B247-398F884DCFF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B744B302-50AA-4E5B-A567-00C4218CDE87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B744B302-50AA-4E5B-A567-00C4218CDE87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B744B302-50AA-4E5B-A567-00C4218CDE87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B744B302-50AA-4E5B-A567-00C4218CDE87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD50909A-B02E-4DD9-A267-AEA277CD06D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD50909A-B02E-4DD9-A267-AEA277CD06D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD50909A-B02E-4DD9-A267-AEA277CD06D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD50909A-B02E-4DD9-A267-AEA277CD06D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -3,7 +3,7 @@
 public interface IOperationResult
 {
     bool IsSuccess { get; set; }
-    bool IsNotFount { get; set; }
+    bool IsNotFound { get; set; }
     List<KeyValuePair<string, string>> ErrorMessages { get; set; }
 }
 
@@ -12,7 +12,7 @@ public class OperationResult<TResult> : IOperationResult
     public TResult? Result { get; set; }
 
     public bool IsSuccess { get; set; }
-    public bool IsNotFount { get; set; }
+    public bool IsNotFound { get; set; }
     public string? ErrorMessage { get; set; }
 
     public List<KeyValuePair<string, string>>? ErrorMessages { get; set; }
@@ -53,7 +53,7 @@ public class OperationResult<TResult> : IOperationResult
     {
         return new OperationResult<TResult>()
         {
-            IsNotFount = true,
+            IsNotFound = true,
             ErrorMessages = [new KeyValuePair<string, string>(propertyName, message)]
         };
     }
@@ -62,7 +62,7 @@ public class OperationResult<TResult> : IOperationResult
     {
         return new OperationResult<TResult>()
         {
-            IsNotFount = true,
+            IsNotFound = true,
             ErrorMessage = message
         };
     }

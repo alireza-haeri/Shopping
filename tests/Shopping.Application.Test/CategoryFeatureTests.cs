@@ -1,162 +1,194 @@
 ﻿using Bogus;
 using FluentAssertions;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using Shopping.Application.Common;
 using Shopping.Application.Extensions;
 using Shopping.Application.Features.Category.Commands;
 using Shopping.Application.Features.Category.Queries;
-using Shopping.Application.Features.Common;
 using Shopping.Application.Repositories.Category;
 using Shopping.Application.Repositories.Common;
 using Shopping.Application.Test.Extensions;
 using Shopping.Domain.Entities.Product;
 using Xunit.Abstractions;
 
-namespace Shopping.Application.Test;
-
-public class CategoryFeatureTests
+namespace Shopping.Application.Test
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-    private readonly IServiceProvider _serviceProvider;
-
-    public CategoryFeatureTests(ITestOutputHelper testOutputHelper)
+    /// <summary>
+    /// Contains application layer tests for all features related to Categories,
+    /// ensuring command and query handlers behave as expected.
+    /// </summary>
+    public class CategoryFeatureTests
     {
-        _testOutputHelper = testOutputHelper;
+        private readonly ITestOutputHelper _testOutputHelper;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Faker _faker;
 
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.RegisterApplicationValidator();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
-    }
+        // --- Mocks ---
+        private readonly IUnitOfWork _unitOfWorkMock;
+        private readonly ICategoryRepository _categoryRepositoryMock;
 
-    [Fact]
-    public async Task Add_Category_With_Valid_Parameters_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var command = new CreateCategoryCommand(faker.Company.CompanyName());
+        public CategoryFeatureTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+            _faker = new Faker();
 
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        categoryRepositoryMock
-            .CreateAsync(Arg.Any<CategoryEntity>())
-            .Returns(Task.FromResult);
-        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
-        unitOfWorkMock.CategoryRepository.Returns(categoryRepositoryMock);
+            // Dependency Injection setup for validators
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.RegisterApplicationValidator();
+            _serviceProvider = serviceCollection.BuildServiceProvider();
 
-        var validationBehavior =
-            new ValidateRequestBehavior<CreateCategoryCommand, OperationResult<bool>>(_serviceProvider
-                .GetRequiredService<IValidator<CreateCategoryCommand>>());
-        var commandHandler = new CreateCategoryCommandHandler(unitOfWorkMock);
+            // Mock setup
+            _unitOfWorkMock = Substitute.For<IUnitOfWork>();
+            _categoryRepositoryMock = Substitute.For<ICategoryRepository>();
+            _unitOfWorkMock.CategoryRepository.Returns(_categoryRepositoryMock);
+        }
 
-        //Act
-        var commandResult = await validationBehavior.Handle(command, CancellationToken.None, commandHandler.Handle);
+        #region CreateCategory Tests
 
-        //Assertion
+        [Fact]
+        public async Task CreateCategory_WithValidTitle_ShouldSucceedAndCommit()
+        {
+            //Arrange
+            var command = new CreateCategoryCommand(_faker.Commerce.Categories(1).First(), null);
+            var handler = new CreateCategoryCommandHandler(_unitOfWorkMock);
 
-        commandResult.Result.Should().Be(true);
-        _testOutputHelper.WriteLineOperationResultErrors(commandResult);
-    }
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
 
-    [Fact]
-    public async Task Get_All_Categories_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        var query = new GetAllCategoryQuery();
-        List<CategoryEntity> categories =
-        [
-            new(faker.Company.CompanyName(), null),
-            new(faker.Company.CompanyName(), null),
-            new(faker.Company.CompanyName(), null)
-        ];
+            //Assertion
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().BeTrue();
 
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        categoryRepositoryMock
-            .GetAllAsync()
-            .Returns(Task.FromResult(categories));
-        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
-        unitOfWorkMock.CategoryRepository.Returns(categoryRepositoryMock);
+            // Verify that the repository and unit of work methods were called exactly once.
+            await _categoryRepositoryMock.Received(1).CreateAsync(Arg.Any<CategoryEntity>(), CancellationToken.None);
+            await _unitOfWorkMock.Received(1).CommitAsync(CancellationToken.None);
 
-        var validationBehavior =
-            new ValidateRequestBehavior<GetAllCategoryQuery, OperationResult<List<GetAllCategoryQueryResult>>>(
-                _serviceProvider
-                    .GetRequiredService<IValidator<GetAllCategoryQuery>>());
-        var queryHandler = new GetAllCategoryQueryHandler(unitOfWorkMock);
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
 
-        //Act
-        var queryResult = await validationBehavior.Handle(query, CancellationToken.None, queryHandler.Handle);
+        [Fact]
+        public async Task CreateCategory_WithEmptyTitle_ShouldFailValidation()
+        {
+            //Arrange
+            var command = new CreateCategoryCommand("", null); // Invalid title
+            var handler = new CreateCategoryCommandHandler(_unitOfWorkMock);
 
-        //Assertion
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(command, handler, _serviceProvider);
 
-        queryResult.IsSuccess.Should().BeTrue();
-        queryResult.Result.Should().NotBeNullOrEmpty();
-        _testOutputHelper.WriteLineOperationResultErrors(queryResult);
-    }
+            //Assertion
+            result.IsSuccess.Should().BeFalse();
+            result.ErrorMessages.Should().Contain(e => e.Key.Contains("Title"));
 
-    [Fact]
-    public async Task Get_Category_By_Id_Should_Be_Success()
-    {
-        //Arrange
-        var faker = new Faker();
-        CategoryEntity category =
-            new(faker.Company.CompanyName(), null);
-        var query = new GetByIdCategoryQuery(category.Id);
+            // Verify that no database operations were attempted
+            await _categoryRepositoryMock.DidNotReceive()
+                .CreateAsync(Arg.Any<CategoryEntity>(), CancellationToken.None);
+            await _unitOfWorkMock.DidNotReceive().CommitAsync(CancellationToken.None);
 
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
 
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        categoryRepositoryMock
-            .GetByIdAsync(category.Id)!
-            .Returns(Task.FromResult(category));
-        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
-        unitOfWorkMock.CategoryRepository.Returns(categoryRepositoryMock);
+        #endregion
 
-        var validationBehavior =
-            new ValidateRequestBehavior<GetByIdCategoryQuery, OperationResult<GetByIdCategoryQueryResult>>(
-                _serviceProvider
-                    .GetRequiredService<IValidator<GetByIdCategoryQuery>>());
-        var queryHandler = new GetByIdCategoryQueryHandler(unitOfWorkMock);
+        #region GetAllCategories Tests
 
-        //Act
-        var queryResult = await validationBehavior.Handle(query, CancellationToken.None, queryHandler.Handle);
+        [Fact]
+        public async Task GetAllCategories_WhenCategoriesExist_ShouldReturnAllCategories()
+        {
+            //Arrange
+            var query = new GetAllCategoryQuery();
+            var categories = new List<CategoryEntity>
+            {
+                new(_faker.Commerce.Department(), null),
+                new(_faker.Commerce.Department(), null)
+            };
 
-        //Assertion
+            _categoryRepositoryMock.GetAllAsync(CancellationToken.None).Returns(Task.FromResult(categories));
+            var handler = new GetAllCategoryQueryHandler(_unitOfWorkMock);
 
-        queryResult.IsSuccess.Should().BeTrue();
-        queryResult.Result.Should().NotBeNull();
-        
-        _testOutputHelper.WriteLineOperationResultErrors(queryResult);
-    }
-    
-    [Fact]
-    public async Task Get_Category_By_Id_Should_Be_NotFound()
-    {
-        //Arrange
-        var faker = new Faker();
-        CategoryEntity category =
-            new(faker.Company.CompanyName(), null);
-        var query = new GetByIdCategoryQuery(Guid.NewGuid());
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
 
+            //Assertion
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().NotBeNull();
+            result.Result.Should().HaveCount(categories.Count);
+            result.Result.First().CategoryTitle.Should().Be(categories.First().Title);
 
-        var categoryRepositoryMock = Substitute.For<ICategoryRepository>();
-        var unitOfWorkMock = Substitute.For<IUnitOfWork>();
-        
-        categoryRepositoryMock
-            .GetByIdAsync(category.Id)!
-            .Returns(Task.FromResult(default(CategoryEntity)));
-        unitOfWorkMock.CategoryRepository.Returns(categoryRepositoryMock);
-        
-        var queryHandler = new GetByIdCategoryQueryHandler(unitOfWorkMock);
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
 
-        //Act
-        var queryResult = await Helpers.ValidateAndExecuteAsync(query,queryHandler,_serviceProvider);
+        [Fact]
+        public async Task GetAllCategories_WhenNoCategoriesExist_ShouldReturnEmptyList()
+        {
+            //Arrange
+            var query = new GetAllCategoryQuery();
 
-        //Assertion
+            _categoryRepositoryMock.GetAllAsync(CancellationToken.None)
+                .Returns(Task.FromResult(new List<CategoryEntity>()));
+            var handler = new GetAllCategoryQueryHandler(_unitOfWorkMock);
 
-        queryResult.IsSuccess.Should().BeFalse();
-        queryResult.IsNotFount.Should().BeTrue();
-        queryResult.Result.Should().BeNull();
-        
-        _testOutputHelper.WriteLineOperationResultErrors(queryResult);
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
+
+            //Assertion
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().NotBeNull().And.BeEmpty();
+
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
+
+        #endregion
+
+        #region GetCategoryById Tests
+
+        [Fact]
+        public async Task GetCategoryById_WhenCategoryExists_ShouldReturnCategory()
+        {
+            //Arrange
+            var category = new CategoryEntity(_faker.Commerce.Department(), null);
+            var query = new GetByIdCategoryQuery(category.Id);
+
+            _categoryRepositoryMock.GetByIdAsync(query.Id, CancellationToken.None)!
+                .Returns(Task.FromResult<CategoryEntity?>(category));
+
+            var handler = new GetByIdCategoryQueryHandler(_unitOfWorkMock);
+
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
+
+            //Assertion
+            result.IsSuccess.Should().BeTrue();
+            result.Result.Should().NotBeNull();
+            result.Result!.Title.Should().Be(category.Title);
+
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
+
+        [Fact]
+        public async Task GetCategoryById_WhenCategoryDoesNotExist_ShouldReturnNotFound()
+        {
+            //Arrange
+            var query = new GetByIdCategoryQuery(Guid.NewGuid());
+
+            // Setup mock to return null for the requested ID
+            _categoryRepositoryMock.GetByIdAsync(query.Id, CancellationToken.None)!
+                .Returns(Task.FromResult<CategoryEntity?>(null));
+
+            var handler = new GetByIdCategoryQueryHandler(_unitOfWorkMock);
+
+            //Act
+            var result = await Helpers.ValidateAndExecuteAsync(query, handler, _serviceProvider);
+
+            //Assertion
+            result.IsSuccess.Should().BeFalse();
+            result.IsNotFound.Should().BeTrue();
+            result.ErrorMessages.Should().Contain(new List<KeyValuePair<string, string>>()
+                { new KeyValuePair<string, string>(nameof(GetByIdCategoryQuery.Id), "Category not found") });
+
+            _testOutputHelper.WriteLineOperationResultErrors(result);
+        }
+
+        #endregion
     }
 }

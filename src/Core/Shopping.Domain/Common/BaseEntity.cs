@@ -3,12 +3,12 @@
 public interface IEntity
 {
     DateTime CreatedDate { get; set; }
-    DateTime ModifyDate { get; set; }
+    DateTime ModifiedDate { get; set; }
 }
 public abstract class BaseEntity<TKey> : IEntity
 {
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifyDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 
     public TKey Id { get; protected set; }
     

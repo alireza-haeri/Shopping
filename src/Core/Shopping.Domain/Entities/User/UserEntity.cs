@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Ardalis.GuardClauses;
+using Microsoft.AspNetCore.Identity;
 using Shopping.Domain.Common;
 using Shopping.Domain.Entities.Product;
 
@@ -21,7 +22,7 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
     public string FirstName { get; private set; }
     public string? LastName { get; private set; }
     public string UserCode { get; private set; }
-    public IReadOnlyList<ProductEntity> Products => _products;
+    public IReadOnlyList<ProductEntity> Products => _products.AsReadOnly();
 
     public ICollection<UserRoleEntity> UserRoles { get; set; } = [];
     public ICollection<UserClaimEntity> UserClaims { get; set; } = [];
@@ -29,10 +30,12 @@ public sealed class UserEntity : IdentityUser<Guid>, IEntity
     public ICollection<UserTokenEntity> UserTokens { get; set; } = [];
 
     public DateTime CreatedDate { get; set; }
-    public DateTime ModifyDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
 
     public void AddProduct(ProductEntity product)
     {
+        Guard.Against.Null(product, nameof(product));
+        
         _products.Add(product);
     }
 }
